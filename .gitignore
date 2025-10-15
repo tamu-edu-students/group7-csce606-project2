@@ -1,0 +1,76 @@
+# See https://help.github.com/articles/ignoring-files for more about ignoring files.
+
+# ── System/Editor junk ─────────────────────────────────────────────────────
+.DS_Store
+.idea/
+*.iml
+.vscode/
+
+# ── Bundler / Ruby ─────────────────────────────────────────────────────────
+/.bundle
+/vendor/bundle
+/vendor/cache
+
+# ── Environment & secrets ──────────────────────────────────────────────────
+/.env
+.env*
+/config/master.key
+/config/credentials*.yml.enc
+/.kamal/secrets
+
+# ── Logs / temp / cache ─────────────────────────────────────────────────────
+log/*
+tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# PID files
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
+# Bootsnap / cache
+/tmp/cache/*
+!/tmp/cache/.keep
+
+# ── Storage (uploaded files + SQLite) ───────────────────────────────────────
+/storage/*
+!/storage/.keep
+/tmp/storage/*
+!/tmp/storage/
+!/tmp/storage/.keep
+
+/db/*.sqlite3
+/db/*.sqlite3-*
+/db/*.sqlite3-journal
+*sqlite3-wal
+*sqlite3-shm
+
+# ── Public assets & uploads ────────────────────────────────────────────────
+/public/assets
+/public/packs
+/public/packs-test
+/public/packs-dev
+/public/manifest.json
+/public/uploads
+
+# ── Node / JS artifacts ────────────────────────────────────────────────────
+/node_modules
+/yarn-error.log
+
+# ── Debug / coverage / tests ───────────────────────────────────────────────
+.byebug_history
+.pry_history
+coverage/
+spec/examples.txt
+
+# ── Docker / deployment overrides ──────────────────────────────────────────
+/docker-compose.override.yml
+
+# Keep sample hooks but ignore real secrets
+!.kamal/hooks/*.sample
+
+# ── Miscellaneous ──────────────────────────────────────────────────────────
+# Keep .keep files and sample templates
+!.keep
+!*.sample
