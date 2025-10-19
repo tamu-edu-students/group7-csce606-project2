@@ -1,0 +1,27 @@
+<%= form_with(model: bulletin_post) do |form| %>
+  <% if bulletin_post.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(bulletin_post.errors.count, "error") %> prohibited this bulletin_post from being saved:</h2>
+
+      <ul>
+        <% bulletin_post.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :title, style: "display: block" %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :description, style: "display: block" %>
+    <%= form.textarea :description %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

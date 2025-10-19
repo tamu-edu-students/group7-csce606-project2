@@ -1,0 +1,12 @@
+<% content_for :title, "Editing bulletin post" %>
+
+<h1>Editing bulletin post</h1>
+
+<%= render "form", bulletin_post: @bulletin_post %>
+
+<br>
+
+<div>
+  <%= link_to "Show this bulletin post", @bulletin_post %> |
+  <%= link_to "Back to bulletin posts", bulletin_posts_path %>
+</div>
