@@ -3,7 +3,7 @@ class CreateTeachingOffers < ActiveRecord::Migration[8.0]
     create_table :teaching_offers do |t|
       t.string :title
       t.text :description
-      t.references :author, null: false, foreign_key: {to_table: :users}
+      t.references :author, null: false, foreign_key: { to_table: :users }
       t.boolean :active, default: true
 
       t.timestamps

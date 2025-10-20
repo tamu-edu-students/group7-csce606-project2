@@ -13,14 +13,14 @@ Rails.application.routes.draw do
   resources :bulletin_posts
 
   resources :projects do
-    resources :memberships, only: [:create, :destroy]
+    resources :memberships, only: [ :create, :destroy ]
   end
 
   resources :teaching_offers do
-    resources :memberships, only: [:create, :destroy]
+    resources :memberships, only: [ :create, :destroy ]
   end
-  resources :memberships, only: [:create, :destroy]
+  resources :memberships, only: [ :create, :destroy ]
 
-  
+
   root "projects#index"
 end
