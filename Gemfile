@@ -61,18 +61,18 @@ group :test do
 end
 
 group :development, :test do
-  gem 'sqlite3'
-  gem 'rspec-rails'
-  gem 'cucumber-rails', require: false
-  gem 'capybara'
-  gem 'selenium-webdriver'
-  gem 'database_cleaner-active_record'
-  gem 'factory_bot_rails'
-  gem 'faker'
-  gem 'simplecov', require: false
-  gem 'simplecov-console', require: false
+  gem "sqlite3"
+  gem "rspec-rails"
+  gem "cucumber-rails", require: false
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "database_cleaner-active_record"
+  gem "factory_bot_rails"
+  gem "faker"
+  gem "simplecov", require: false
+  gem "simplecov-console", require: false
 end
 
 group :production do
-  gem 'pg', '~> 1.5'
+  gem "pg", "~> 1.5"
 end
