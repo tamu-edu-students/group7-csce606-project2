@@ -22,5 +22,5 @@ Rails.application.routes.draw do
   resources :memberships, only: [ :create, :destroy ]
 
 
-  root "projects#index"
+  root "bulletin_posts#index"
 end

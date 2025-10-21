@@ -1,10 +1,55 @@
+<%# app/views/bulletin_posts/show.html.erb %>
+
+<% content_for :title, @bulletin_post.title %>
+<% current_user = nil %>
 <p style="color: green"><%= notice %></p>
 
-<%= render @bulletin_post %>
+<div class="bulletin-post-container">
 
-<div>
-  <%= link_to "Edit this bulletin post", edit_bulletin_post_path(@bulletin_post) %> |
-  <%= link_to "Back to bulletin posts", bulletin_posts_path %>
+  <h1><%= @bulletin_post.title %></h1>
 
-  <%= button_to "Destroy this bulletin post", @bulletin_post, method: :delete %>
+  <div class="post-meta">
+    <p>
+      <strong>Author:</strong> 
+      <span><%= @bulletin_post.author.name || "Unknown Author" %></span>
+    </p>
+    <p>
+      <strong>Posted on:</strong>
+      <span><%= @bulletin_post.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+    </p>
+    <p>
+      <strong>Last updated:</strong>
+      <span><%= @bulletin_post.updated_at.strftime("%B %d, %Y") %></span>
+    </p>
+  </div>
+
+  <hr>
+
+  <div class="post-description">
+    <%= simple_format(@bulletin_post.description) %>
+  </div>
+
+  <hr>
+
+  <!--
+  <div class="post-status">
+    <strong>Status:</strong>
+    <% if @bulletin_post.active? %>
+      <span style="color: green;">Active</span>
+    <% else %>
+      <span style="color: grey;">Inactive</span>
+    <% end %>
+  </div>
+  -->
+</div>
+
+<div class="action-links">
+  <% if @bulletin_post.author == current_user %>
+    <%= link_to "Edit this bulletin post", edit_bulletin_post_path(@bulletin_post), class: "btn btn-secondary" %> |
+  <% end %>
+
+  <%= link_to "Back to bulletin posts", bulletin_posts_path, class: "btn btn-light" %>
+  <% if @bulletin_post.author == current_user %>
+    <%= button_to "Destroy this bulletin post", @bulletin_post, method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+  <% end %>
 </div>

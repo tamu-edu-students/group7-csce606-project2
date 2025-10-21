@@ -1,13 +1,20 @@
 class BulletinPostsController < ApplicationController
-  before_action :set_bulletin_post, only: %i[ show edit update destroy ]
+  # before_action :authenticate_user!, only: [:new, :create]
+  # before_action :authenticate_user!  #the method to get user
 
   # GET /bulletin_posts or /bulletin_posts.json
   def index
-    @bulletin_posts = BulletinPost.all
+    if params[:query].present?
+      search_term = "%#{params[:query]}%"
+      @bulletin_posts = BulletinPost.where("title LIKE ? OR description LIKE ?", search_term, search_term)
+    else
+      @bulletin_posts = BulletinPost.all
+    end
   end
 
   # GET /bulletin_posts/1 or /bulletin_posts/1.json
   def show
+    @bulletin_post = BulletinPost.find(params[:id])
   end
 
   # GET /bulletin_posts/new
@@ -22,17 +29,23 @@ class BulletinPostsController < ApplicationController
   # POST /bulletin_posts or /bulletin_posts.json
   def create
     @bulletin_post = BulletinPost.new(bulletin_post_params)
-    @bulletin_post.author = User.first # THIS IS TEMPORARY!
-
-    respond_to do |format|
-      if @bulletin_post.save
-        format.html { redirect_to @bulletin_post, notice: "Bulletin post was successfully created." }
-        format.json { render :show, status: :created, location: @bulletin_post }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @bulletin_post.errors, status: :unprocessable_entity }
-      end
+    current_user = User.find(1)
+    @bulletin_post.author = current_user # THIS IS TEMPORARY!
+    
+    if @bulletin_post.save
+      redirect_to @bulletin_post, notice: "Bulletin post was successfully created."
+    else
+      render :new, status: :unprocessable_entity
     end
+    # respond_to do |format|
+    #   if @bulletin_post.save
+    #     format.html { redirect_to @bulletin_post, notice: "Bulletin post was successfully created." }
+    #     format.json { render :show, status: :created, location: @bulletin_post }
+    #   else
+    #     format.html { render :new, status: :unprocessable_entity }
+    #     format.json { render json: @bulletin_post.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # PATCH/PUT /bulletin_posts/1 or /bulletin_posts/1.json
