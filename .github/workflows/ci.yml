@@ -81,6 +81,7 @@ jobs:
 
   cucumber:
     needs: [rspec]
+    if: always()
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test
