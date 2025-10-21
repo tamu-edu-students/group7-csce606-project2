@@ -31,7 +31,7 @@ class BulletinPostsController < ApplicationController
     @bulletin_post = BulletinPost.new(bulletin_post_params)
     current_user = User.find(1)
     @bulletin_post.author = current_user # THIS IS TEMPORARY!
-    
+
     if @bulletin_post.save
       redirect_to @bulletin_post, notice: "Bulletin post was successfully created."
     else
