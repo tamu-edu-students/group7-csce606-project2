@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  devise_for :users, path: '', path_names: {
+    sign_in: 'login',
+    sign_out: 'logout',
+    registration: 'register'
+  }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -23,6 +28,5 @@ Rails.application.routes.draw do
 
 
   root "bulletin_posts#index"
-  devise_for :users
   resources :bulletin_posts, only: [:index, :show, :new, :create, :edit, :update, :destroy]
 end

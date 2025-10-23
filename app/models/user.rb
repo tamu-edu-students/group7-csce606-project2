@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+    devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
     has_many :projects, inverse_of: :author, dependent: :destroy
     has_many :teaching_offers,  inverse_of: :author, dependent: :destroy
     has_many :bulletin_posts,  inverse_of: :author, dependent: :destroy

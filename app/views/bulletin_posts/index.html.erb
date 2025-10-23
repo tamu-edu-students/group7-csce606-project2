@@ -1,7 +1,7 @@
 <%# app/views/bulletin_posts/index.html.erb %>
 
 <p style="color: green"><%= notice %></p>
-<% user_signed_in = true%>
+# <% user_signed_in = true%>
 <% content_for :title, "Bulletin posts" %>
 
 <h1>Bulletin</h1>
@@ -13,7 +13,7 @@
   <% end %>
   <%= link_to "Create Post", new_bulletin_post_path, class: "btn btn-primary" %>
 <% else %>
-  <p><%= link_to "Log in", new_user_session_path %> to search or create posts.</p>
+    <%= link_to "Log in", new_user_session_path %> to search or create posts.
 <% end %>
 
 <ul>
