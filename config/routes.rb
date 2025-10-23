@@ -23,4 +23,6 @@ Rails.application.routes.draw do
 
 
   root "bulletin_posts#index"
+  devise_for :users
+  resources :bulletin_posts, only: [:index, :show, :new, :create, :edit, :update, :destroy]
 end
