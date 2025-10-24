@@ -2,7 +2,7 @@ class BulletinPostsController < ApplicationController
   # before_action :authenticate_user!, only: [:new, :create]
   # before_action :authenticate_user!  #the method to get user
   # Public landing page
-  skip_before_action :authenticate_user!, only: [:index, :show]
+  skip_before_action :authenticate_user!, only: [ :index, :show ]
   # GET /bulletin_posts or /bulletin_posts.json
   def index
     if params[:query].present?
@@ -11,7 +11,7 @@ class BulletinPostsController < ApplicationController
         @bulletin_posts = BulletinPost.where("title LIKE ? OR description LIKE ?", search_term, search_term)
       else
         redirect_to new_user_session_path, alert: "You must be logged in to search bulletin posts."
-        return
+        nil
       end
     else
       @bulletin_posts = BulletinPost.all

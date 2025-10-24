@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users, path:'', path_names: {
-    sign_up: 'register',
-    sign_in: 'login',
-    sign_out: 'logout'
+  devise_for :users, path: "", path_names: {
+    sign_up: "register",
+    sign_in: "login",
+    sign_out: "logout"
   }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -28,5 +28,5 @@ Rails.application.routes.draw do
 
 
   root "bulletin_posts#index"
-  resources :bulletin_posts, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+  resources :bulletin_posts, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
 end
