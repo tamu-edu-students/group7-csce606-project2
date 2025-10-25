@@ -8,7 +8,7 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-temp_user = User.create!(name: "Temp User", password: "temp", email: "temp@example.com")
+temp_user = User.create!(name: "Temp User", password: "Password123", email: "temp@tamu.edu")
 BulletinPost.create!(title: "Example Bulletin Post", description: "Example description.", author: temp_user)
 Project.create!(title: "Example Project", description: "Example description.", role_cnt: 5, author: temp_user)
 TeachingOffer.create!(title: "Example Teaching Offer", description: "Example description.", author: temp_user)
