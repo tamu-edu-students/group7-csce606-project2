@@ -11,7 +11,7 @@ RSpec.describe User, type: :model do
     user = User.new(name: "Tasnia", email: "itasniaj@gmail.com", password: "passw0rd!")
     expect(user).not_to be_valid
   end
-  
+
   it "shows error for non-tamu emails" do
     user = User.new(name: "Tasnia", email: "itasniaj@gmail.com", password: "passw0rd!")
     user.valid?
