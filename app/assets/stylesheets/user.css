@@ -1,0 +1,190 @@
+:root {
+  --background-color: #fcfdff;
+  --container-background-color: #ffffff;
+  --accent-color: #bcd4ff;
+  --accent-color-2: #669cff;
+  --hover-color: #f0f0f0;
+  --text-color: #333;
+  --header-color: #222;
+  --border-separator: #ededed;
+  --card-background: #fafafa;
+}
+
+
+body {
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.profile-container {
+  max-width: 1000px;
+  min-height: 1000px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: var(--container-background-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.profile-container .user-name {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--header-color);
+}
+
+.profile-icons {
+    display:flex;
+    justify-content: right;
+}
+
+.profile-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  border-bottom: 2px solid var(--border-separator);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.profile-tabs a {
+  text-decoration: none;
+  color: #555;
+  min-width: 150px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px 6px 0 0;
+  transition: all 0.2s ease;
+}
+
+.profile-tabs a:hover {
+  background-color: var(--hover-color);
+  color: rgb(61, 61, 61);
+}
+
+.profile-tabs a.active {
+  background-color: var(--accent-color);
+  font-weight: 550;
+  color: rgb(28, 28, 28);
+}
+
+/* Section headings */
+h2 {
+  font-size: 1.5rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.info-card {
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.info-card:hover {
+  
+  background-color: var(--hover-color);
+  transition-duration: 100ms;  
+  transform: translateY(-2px);
+}
+
+.link {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.small-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+}
+
+.small-icon:hover {
+    cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 120%; 
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 180px;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.dropdown-item:hover {
+  background-color:  var(--hover-color);
+}
+
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+.profile-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    gap: 1rem;
+}
+
+
+.account-container {
+    display: block;
+    max-width: 50%;
+    margin: auto;
+    background-color: white;
+}
+
+.account-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1rem;
+  font-size: 1.1rem;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  color: #222;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  text-align: left;
+}
+
+.account-button:hover {
+  background-color: #edf6ff;
+  transform: translateY(-1px);
+}
+
+
+
+.info-card h3 {
+  margin: 0 0 0.25rem;
+}
+
+.info-card p {
+  margin: 0;
+  color: #6e6e6e;
+}

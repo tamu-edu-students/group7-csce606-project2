@@ -1,10 +1,40 @@
-<p style="color: green"><%= notice %></p>
+<div class="profile-container">
+  <% if notice.present? %>
+    <p style="color: green"><%= notice %></p>
+  <% end %>
 
-<%= render @user %>
+  <% if temp_current_user == @user%>
+  <div class="profile-icons">
+    <details class="dropdown">
+    <summary>
+      <%= image_tag "plus-svgrepo-com.svg", class: "small-icon", alt: "New" %>
+    </summary>
 
-<div>
-  <%= link_to "Edit this user", edit_user_path(@user) %> |
-  <%= link_to "Back to users", users_path %>
+    <div class="dropdown-menu">
+      <%= link_to "New Project", new_project_path, class: "dropdown-item" %>
+      <%= link_to "New Teaching Offer", new_teaching_offer_path, class: "dropdown-item" %>
+      <%= link_to "New Post", new_bulletin_post_path, class: "dropdown-item" %>
+    </div>
+  </details>
+  <%= link_to account_path do %>
+      <%= image_tag "gear-svgrepo-com.svg", class: "small-icon", alt: "Edit" %>
+  <% end %>
+  </div>
+  <% end %>
 
-  <%= button_to "Destroy this user", @user, method: :delete %>
+  <div class="user-name"><%= @user.name %></div>
+  
+
+  <nav class="profile-tabs">
+    <%= link_to "Created Projects", user_path(@user, tab: "projects"), class: (@tab == "projects" ? "active" : "") %>
+    <%= link_to "Joined Projects", user_path(@user, tab: "joined_projects"), class: (@tab == "joined_projects" ? "active" : "") %>
+    <%= link_to "Teacher", user_path(@user, tab: "teaching_offers"), class: (@tab == "teaching_offers" ? "active" : "") %>
+    <%= link_to "Student", user_path(@user, tab: "joined_teaching_offers"), class: (@tab == "joined_teaching_offers" ? "active" : "") %>
+    <%= link_to "Posts", user_path(@user, tab: "posts"), class: (@tab == "posts" ? "active" : "") %>
+  </nav>
+
+  <div class="profile-content">
+    <%= render "users/#{@tab}", @tab.to_sym => instance_variable_get("@#{@tab}") %>
+  </div>
+
 </div>
