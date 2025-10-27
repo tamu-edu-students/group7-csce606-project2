@@ -2,26 +2,41 @@
 
 <p style="color: green"><%= notice %></p>
 <p style="color: red"><%= alert %></p>
-<% user_signed_in = true%>
 <% content_for :title, "Bulletin posts" %>
 
 <h1>Bulletin</h1>
 
 <% if user_signed_in? %>
-  <%= form_with url: bulletin_posts_path, method: :get, local: true do |f| %>
-    <%= f.text_field :query, placeholder: "Search posts..." %>
-    <%= f.submit "Search" %>
+  <%= form_with(url: bulletin_posts_path, method: :get, local: true) do |form| %>
+    <div>
+      <%= form.label :query, "Search by title or description:" %>
+      <%= form.text_field :query, value: params[:query] %>
+      <%= form.submit "Search" %>
+    </div>
   <% end %>
   <%= link_to "Create Post", new_bulletin_post_path, class: "btn btn-primary" %>
 <% else %>
     <%= link_to "Log in", new_user_session_path %> to search or create posts.
 <% end %>
 
-<ul>
-  <% @bulletin_posts.each do |post| %>
-    <li>
-      <strong><%= post.title %></strong><br>
-      <%= post.description.truncate(100) %>
-    </li>
-  <% end %>
-</ul>
+<% if params[:query].present? %>
+  <h2>Search results for: "<%= params[:query] %>"</h2>
+<% end %>
+
+<div id="bulletin_posts">
+  <ul>
+    <% @bulletin_posts.each do |bulletin_post| %>
+      <li>
+        <strong><%= bulletin_post.title %></strong><br>
+        <%= bulletin_post.description.truncate(100) %>
+        <p>
+        <% if user_signed_in? %>
+            <%= link_to "Detail", bulletin_post %>
+          <% else %>
+            <%= link_to "Login to detail", new_user_session_path %>
+          <% end %>
+        </p>
+      </li>
+    <% end %>
+  </ul>
+</div>

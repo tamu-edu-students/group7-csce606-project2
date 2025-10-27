@@ -2,7 +2,8 @@ class BulletinPostsController < ApplicationController
   # before_action :authenticate_user!, only: [:new, :create]
   # before_action :authenticate_user!  #the method to get user
   # Public landing page
-  skip_before_action :authenticate_user!, only: [ :index, :show ]
+  skip_before_action :authenticate_user!, only: [ :index, :show , :destroy, :edit]
+  before_action :set_bulletin_post, only: %i[edit update]
   # GET /bulletin_posts or /bulletin_posts.json
   def index
     if params[:query].present?
@@ -35,7 +36,7 @@ class BulletinPostsController < ApplicationController
   # POST /bulletin_posts or /bulletin_posts.json
   def create
     @bulletin_post = BulletinPost.new(bulletin_post_params)
-    current_user = User.find(1)
+    # current_user = User.find(1)
     @bulletin_post.author = current_user # THIS IS TEMPORARY!
 
     if @bulletin_post.save
@@ -69,6 +70,7 @@ class BulletinPostsController < ApplicationController
 
   # DELETE /bulletin_posts/1 or /bulletin_posts/1.json
   def destroy
+    @bulletin_post = BulletinPost.find(params[:id])
     @bulletin_post.destroy!
 
     respond_to do |format|
