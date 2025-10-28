@@ -1,7 +1,6 @@
 <%# app/views/bulletin_posts/show.html.erb %>
 
 <% content_for :title, @bulletin_post.title %>
-<% current_user = nil %>
 <p style="color: green"><%= notice %></p>
 <p style="color: red"><%= alert %></p>
 
@@ -46,11 +45,9 @@
 
 <div class="action-links">
   <% if @bulletin_post.author == current_user %>
-    <%= link_to "Edit this bulletin post", edit_bulletin_post_path(@bulletin_post), class: "btn btn-secondary" %> |
+    <%= link_to "Edit this bulletin post", edit_bulletin_post_path(@bulletin_post), class: "btn btn-secondary" %>
+    <%= button_to "Destroy this bulletin post", @bulletin_post, method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: "btn btn-danger" %>
   <% end %>
 
   <%= link_to "Back to bulletin posts", bulletin_posts_path, class: "btn btn-light" %>
-  <% if @bulletin_post.author == current_user %>
-    <%= button_to "Destroy this bulletin post", @bulletin_post, method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: "btn btn-danger" %>
-  <% end %>
 </div>
