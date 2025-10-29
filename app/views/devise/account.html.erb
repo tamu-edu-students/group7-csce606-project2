@@ -1,0 +1,23 @@
+<div class="account-container">
+
+  <div>
+    <%= form_with url: edit_user_path(@user), method: :get do %>
+      <button type="submit" class="account-button">
+        <%= image_tag "note-svgrepo-com.svg", class: "small-icon", alt: "Edit Personal Info" %>
+        <span>Edit personal info</span>
+      </button>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form_with model: @user,
+                  method: :delete,
+                  data: { turbo_confirm: "Are you sure you want to delete your account? This action cannot be undone." } do %>
+      <button type="submit" class="account-button">
+        <%= image_tag "trash-svgrepo-com.svg", class: "small-icon", alt: "Delete Your Account" %>
+        <span>Delete your account</span>
+      </button>
+    <% end %>
+  </div>
+
+</div>
