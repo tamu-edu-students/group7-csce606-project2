@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  devise_for :users, path: "", path_names: {
+    sign_up: "register",
+    sign_in: "login",
+    sign_out: "logout"
+  }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -23,5 +28,7 @@ Rails.application.routes.draw do
   resources :memberships, only: [ :create, :destroy ]
 
   get "/account", to: "users#account", as: "account"
-  root "projects#index"
+
+  root "bulletin_posts#index"
+  resources :bulletin_posts, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
 end
