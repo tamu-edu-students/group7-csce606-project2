@@ -6,7 +6,7 @@
 
 <div id="users">
   <% @users.each do |user| %>
-    <%= render user %>
+    <%= render partial: 'devise/user', locals: { user: user } %>
     <p>
       <%= link_to "Show this user", user %>
     </p>

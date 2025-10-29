@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   # GET /users or /users.json
   def index
     @users = User.all
+    render 'devise/index'
   end
 
   # GET /users/1 or /users/1.json
@@ -67,8 +68,8 @@ class UsersController < ApplicationController
   end
 
   def account
-      @user = temp_current_user
-      render :_account
+      @user = current_user
+      render 'devise/account'
     end
 
   
@@ -80,7 +81,7 @@ class UsersController < ApplicationController
     end
 
     def authorize_user!
-     unless @user == temp_current_user
+     unless @user == current_user
       redirect_to root_path, alert: "You are not authorized to access this page."
       end
     end
