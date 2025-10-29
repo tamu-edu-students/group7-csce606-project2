@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy]
-  before_action :authorize_user!, only: [:edit, :update, :destroy]
+  before_action :authorize_user!, only: [ :edit, :update, :destroy ]
 
   # GET /users or /users.json
   def index
     @users = User.all
-    render 'devise/index'
+    render "devise/index"
   end
 
   # GET /users/1 or /users/1.json
@@ -69,10 +69,10 @@ class UsersController < ApplicationController
 
   def account
       @user = current_user
-      render 'devise/account'
+      render "devise/account"
     end
 
-  
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -83,10 +83,10 @@ class UsersController < ApplicationController
     def authorize_user!
      unless @user == current_user
       redirect_to root_path, alert: "You are not authorized to access this page."
-      end
+     end
     end
 
-     
+
 
     # Only allow a list of trusted parameters through.
     def user_params
