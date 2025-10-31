@@ -4,9 +4,33 @@
 <%= render @teaching_offer %>
 
 <div>
-  <%= link_to "Edit this teaching offer", edit_teaching_offer_path(@teaching_offer) %> |
-  <%= link_to "Back to teaching offers", teaching_offers_path %>
 
+<% if current_user && !@teaching_offer.users.include?(current_user) %>
+  <%= button_to "Join",
+        memberships_path(memberable_type: @teaching_offer.class.name, memberable_id: @teaching_offer.id),
+        method: :post,
+        class: "btn btn-primary" %>
+<% else %>
+  <%= button_to "Leave",
+        memberships_path(memberable_type: @teaching_offer.class.name, memberable_id: @teaching_offer.id),
+        method: :delete,
+        class: "btn btn-secondary" %>
+<% end %>
+
+
+<% @teaching_offer.users.each do |user| %>
+    <p><%= user.name %></p>
+<% end %>
+
+
+
+<% if current_user == @teaching_offer.author %>
+  <%= link_to "Edit this teaching offer", edit_teaching_offer_path(@teaching_offer) %> |
   <%= button_to "Destroy this teaching offer", @teaching_offer, method: :delete %>
+  
+<% end %>
+ <%= link_to "Back to teaching offers", teaching_offers_path %>
 </div>
+
+
 </div>

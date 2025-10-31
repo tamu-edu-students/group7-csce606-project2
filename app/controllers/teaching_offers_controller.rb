@@ -18,6 +18,7 @@ class TeachingOffersController < ApplicationController
 
   # GET /teaching_offers/1 or /teaching_offers/1.json
   def show
+    
   end
 
   # GET /teaching_offers/new
@@ -32,7 +33,7 @@ class TeachingOffersController < ApplicationController
   # POST /teaching_offers or /teaching_offers.json
   def create
     @teaching_offer = TeachingOffer.new(teaching_offer_params)
-    @teaching_offer.author = User.first # THIS IS TEMPORARY!
+    @teaching_offer.author = current_user
 
     respond_to do |format|
       if @teaching_offer.save
