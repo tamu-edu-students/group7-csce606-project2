@@ -1,9 +1,19 @@
 class TeachingOffersController < ApplicationController
   before_action :set_teaching_offer, only: %i[ show edit update destroy ]
-
+  include SearchHelper
   # GET /teaching_offers or /teaching_offers.json
   def index
-    @teaching_offers = TeachingOffer.all
+    if params[:query].present?
+      if user_signed_in?
+        @teaching_offers = fuzzy_search_all(params[:query]).select { |r| r[:type] == "TeachingOffer" }
+                        .map { |r| r[:record] }
+      else
+        redirect_to new_user_session_path,
+                    alert: "You must be logged in to search bulletin posts."
+      end
+    else
+      @teaching_offers = TeachingOffer.all
+    end
   end
 
   # GET /teaching_offers/1 or /teaching_offers/1.json

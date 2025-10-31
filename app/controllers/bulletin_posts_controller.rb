@@ -4,15 +4,16 @@ class BulletinPostsController < ApplicationController
   # Public landing page
   skip_before_action :authenticate_user!, only: [ :index, :show, :destroy, :edit ]
   before_action :set_bulletin_post, only: %i[edit update]
+  include SearchHelper
   # GET /bulletin_posts or /bulletin_posts.json
   def index
     if params[:query].present?
       if user_signed_in?
-        search_term = "%#{params[:query]}%"
-        @bulletin_posts = BulletinPost.where("title LIKE ? OR description LIKE ?", search_term, search_term)
+        @bulletin_posts = fuzzy_search_all(params[:query]).select { |r| r[:type] == "BulletinPost" }
+                        .map { |r| r[:record] }
       else
-        redirect_to new_user_session_path, alert: "You must be logged in to search bulletin posts."
-        nil
+        redirect_to new_user_session_path,
+                    alert: "You must be logged in to search bulletin posts."
       end
     else
       @bulletin_posts = BulletinPost.all
