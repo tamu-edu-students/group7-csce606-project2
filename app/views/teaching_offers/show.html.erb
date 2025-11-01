@@ -15,7 +15,7 @@
               method: :post,
               class: "btn btn-primary" %>
 
-      <% elsif membership.pending? %>
+      <% elsif membership[:status] == 0 %>
         <!-- Already requested -->
         <p class="text-warning mt-2">⏳ Your request is pending tutor approval.</p>
         <%= button_to "Cancel Request",
@@ -23,7 +23,7 @@
               method: :delete,
               class: "btn btn-secondary" %>
 
-      <% elsif membership.approved? %>
+      <% elsif membership[:status] == 1 %>
         <!-- Approved learner -->
         <p class="text-success mt-2">✅ You are approved for this offer.</p>
         <%= button_to "Leave",

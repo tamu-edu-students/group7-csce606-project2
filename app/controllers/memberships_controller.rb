@@ -8,6 +8,7 @@ class MembershipsController < ApplicationController
     membership = @memberable.memberships.build(user: current_user, status: :pending)
 
     if membership.save
+      @memberable.memberships.reload
       redirect_back fallback_location: root_path, notice: "Join request sent!"
     else
       redirect_back fallback_location: root_path, alert: membership.errors.full_messages.to_sentence

@@ -77,6 +77,6 @@ class TeachingOffersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def teaching_offer_params
-      params.require(:teaching_offer).permit(:title, :description)
+      params.require(:teaching_offer).permit(:title, :description, :student_cap)
     end
 end
