@@ -23,12 +23,16 @@ Rails.application.routes.draw do
   end
 
   resources :teaching_offers do
-    resources :memberships, only: [ :create, :destroy ]
+    resources :memberships, only: [:create, :destroy, :index] do
+      member do
+        patch :approve
+      end
+    end
   end
-  resources :memberships, only: [ :create, :destroy ]
 
   get "/account", to: "users#account", as: "account"
 
   root "bulletin_posts#index"
   resources :bulletin_posts, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
+
 end

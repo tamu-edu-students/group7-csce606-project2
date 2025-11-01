@@ -1,36 +1,86 @@
 <div class="profile-container">
-<p style="color: green"><%= notice %></p>
+  <p style="color: green"><%= notice %></p>
 
-<%= render @teaching_offer %>
+  <%= render @teaching_offer %>
 
-<div>
+  <div>
+    <%# =============== LEARNER VIEW =============== %>
+    <% if user_signed_in? && current_user != @teaching_offer.author %>
+      <% membership = @teaching_offer.memberships.find_by(user: current_user) %>
 
-<% if current_user && !@teaching_offer.users.include?(current_user) %>
-  <%= button_to "Join",
-        memberships_path(memberable_type: @teaching_offer.class.name, memberable_id: @teaching_offer.id),
-        method: :post,
-        class: "btn btn-primary" %>
-<% else %>
-  <%= button_to "Leave",
-        memberships_path(memberable_type: @teaching_offer.class.name, memberable_id: @teaching_offer.id),
-        method: :delete,
-        class: "btn btn-secondary" %>
-<% end %>
+      <% if membership.nil? %>
+        <!-- Not yet joined -->
+        <%= button_to "Request to Join",
+              teaching_offer_memberships_path(@teaching_offer),
+              method: :post,
+              class: "btn btn-primary" %>
+
+      <% elsif membership.pending? %>
+        <!-- Already requested -->
+        <p class="text-warning mt-2">⏳ Your request is pending tutor approval.</p>
+        <%= button_to "Cancel Request",
+              teaching_offer_membership_path(@teaching_offer, membership),
+              method: :delete,
+              class: "btn btn-secondary" %>
+
+      <% elsif membership.approved? %>
+        <!-- Approved learner -->
+        <p class="text-success mt-2">✅ You are approved for this offer.</p>
+        <%= button_to "Leave",
+              teaching_offer_membership_path(@teaching_offer, membership),
+              method: :delete,
+              class: "btn btn-outline-danger" %>
+      <% end %>
+
+    <% end %>
 
 
-<% @teaching_offer.users.each do |user| %>
-    <p><%= user.name %></p>
-<% end %>
+    <%# =============== TUTOR VIEW =============== %>
+    <% if user_signed_in? && current_user == @teaching_offer.author %>
+      <h3 class="mt-4">Join Requests</h3>
+      <% pending_requests = @teaching_offer.pending_memberships.includes(:user) %>
+
+      <% if pending_requests.any? %>
+        <ul>
+          <% pending_requests.each do |membership| %>
+            <li>
+              <strong><%= membership.user.name %></strong>
+              (<%= membership.user.email %>)
+              <%= button_to "Approve",
+                    approve_teaching_offer_membership_path(@teaching_offer, membership),
+                    method: :patch,
+                    class: "btn btn-success btn-sm" %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No pending requests.</p>
+      <% end %>
+
+      <h3 class="mt-4">Approved Learners</h3>
+      <% approved_learners = @teaching_offer.approved_memberships.includes(:user).map(&:user) %>
+      <% if approved_learners.any? %>
+        <ul>
+          <% approved_learners.each do |user| %>
+            <li><%= user.name %> (<%= user.email %>)</li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No learners have been approved yet.</p>
+      <% end %>
+    <% end %>
 
 
+    <%# =============== COMMON FOOTER (both roles) =============== %>
+    <% if current_user == @teaching_offer.author %>
+      <div class="mt-4">
+        <%= link_to "Edit this teaching offer", edit_teaching_offer_path(@teaching_offer), class: "btn btn-outline-primary" %>
+        <%= button_to "Destroy this teaching offer", @teaching_offer, method: :delete, class: "btn btn-danger" %>
+      </div>
+    <% end %>
 
-<% if current_user == @teaching_offer.author %>
-  <%= link_to "Edit this teaching offer", edit_teaching_offer_path(@teaching_offer) %> |
-  <%= button_to "Destroy this teaching offer", @teaching_offer, method: :delete %>
-  
-<% end %>
- <%= link_to "Back to teaching offers", teaching_offers_path %>
-</div>
-
-
+    <div class="mt-3">
+      <%= link_to "Back to Teaching Offers", teaching_offers_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
 </div>
