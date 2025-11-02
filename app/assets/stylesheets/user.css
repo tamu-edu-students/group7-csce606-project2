@@ -188,3 +188,8 @@ summary::-webkit-details-marker {
   margin: 0;
   color: #6e6e6e;
 }
+
+
+.unread {
+  color: red;
+}
