@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_01_204214) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_01_225139) do
   create_table "bulletin_posts", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -53,6 +53,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_01_204214) do
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "open"
+    t.string "skills"
     t.index ["author_id"], name: "index_projects_on_author_id"
   end
 

@@ -19,6 +19,10 @@ Rails.application.routes.draw do
   resources :bulletin_posts
 
   resources :projects do
+    member do
+      patch :close
+      patch :reopen
+    end
     resources :memberships, only: [ :create, :destroy ]
   end
 
