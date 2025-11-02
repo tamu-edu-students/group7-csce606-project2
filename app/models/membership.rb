@@ -8,10 +8,11 @@ class Membership < ApplicationRecord
   end
 
   enum :status, {
-        pending: "pending",
-        full:    "full",
-        closed:  "closed"
-    }
+    pending: "pending",
+    approved: "approved",
+    rejected: "rejected"
+  }
+
   validates :user_id, uniqueness: {
     scope: [:memberable_type, :memberable_id],
     message: "has already requested to join this"

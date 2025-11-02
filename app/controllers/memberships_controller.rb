@@ -23,9 +23,22 @@ class MembershipsController < ApplicationController
   # Tutor approves a join request
   def approve
     membership = @memberable.memberships.find(params[:id])
-    membership.update(status: :approved)
+    membership.update(status: "approved")
     redirect_back fallback_location: teaching_offer_memberships_path(@memberable),
                   notice: "#{membership.user.name} has been approved."
+  end
+
+  # Tutor rejects a join request
+  def reject
+    membership = Membership.find(params[:id])
+
+    if current_user == membership.memberable.author
+      membership.update(status: "rejected")
+      redirect_back fallback_location: teaching_offer_path(membership.memberable),
+                    notice: "#{membership.user.name}'s request has been rejected."
+    else
+      redirect_back fallback_location: root_path, alert: "You don't have permission to do that."
+    end
   end
 
   # Learner cancels membership
