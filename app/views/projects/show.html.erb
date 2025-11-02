@@ -3,7 +3,10 @@
 <% content_for :title, @project.title %>
 
 <h1><%= @project.title %></h1>
-
+<p>
+      <strong>Author:</strong> 
+      <span><%= @project.author.name || "Unknown Author" %></span>
+    </p>
 <p><strong>Description:</strong></p>
 <p><%= @project.description %></p>
 
@@ -28,10 +31,7 @@
 
   <p>
     <%= link_to "Edit", edit_project_path(@project), class: "btn btn-secondary" %> |
-    <%= link_to "Delete", project_path(@project),
-                 method: :delete,
-                 data: { confirm: "Are you sure?" },
-                 class: "btn btn-danger" %>
+    <%= button_to "Delete this project", @project, method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: "btn btn-danger" %>
   </p>
 <% elsif user_signed_in? %>
   <% if @project.open? %>
@@ -45,5 +45,12 @@
 <% end %>
 
 <hr>
-
+<!--
+<div class="action-links">
+  <% if @project.author == current_user %>
+    <%= link_to "Edit this project", edit_project_path(@project), class: "btn btn-secondary" %>
+    <%= button_to "Delete this project", @project, method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+  <% end %>
+</div>
+-->
 <%= link_to "Back to Projects", projects_path, class: "btn btn-outline-primary" %>

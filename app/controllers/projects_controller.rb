@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
   # POST /projects or /projects.json
   def create
     @project = Project.new(project_params)
-    @project.author = User.first # THIS IS TEMPORARY!
+    @project.author = current_user # THIS IS TEMPORARY!
 
     respond_to do |format|
       if @project.save

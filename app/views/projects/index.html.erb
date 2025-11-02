@@ -29,7 +29,7 @@
         <p><strong>Skills:</strong> <%= project.skills %></p>
         <p><strong>Status:</strong> <%= project.status.capitalize %></p>
         <p><strong>Roles available:</strong> <%= project.role_cnt %></p>
-        <p><strong>Creator:</strong> <%= project.author.email if project.author %></p>
+        <p><strong>Creator:</strong> <%= project.author.name if project.author %></p>
         <p>
           <%= link_to "View Details", project_path(project), class: "btn btn-primary" %>
         </p>
