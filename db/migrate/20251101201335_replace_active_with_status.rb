@@ -4,5 +4,3 @@ class ReplaceActiveWithStatus < ActiveRecord::Migration[8.0]
     add_column :teaching_offers, :status, :string, default: "pending", null: false
   end
 end
-
-

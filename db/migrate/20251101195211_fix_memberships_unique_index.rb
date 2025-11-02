@@ -4,7 +4,7 @@ class FixMembershipsUniqueIndex < ActiveRecord::Migration[8.0]
     remove_index :memberships, name: "index_memberships_on_memberable", if_exists: true
 
     # Shorter name, same logic
-    add_index :memberships, [:memberable_type, :memberable_id, :user_id],
+    add_index :memberships, [ :memberable_type, :memberable_id, :user_id ],
               unique: true,
               name: "idx_memberships_memberable_user"
   end

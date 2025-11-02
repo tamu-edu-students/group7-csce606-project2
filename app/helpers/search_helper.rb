@@ -1,4 +1,4 @@
-require 'amatch'
+require "amatch"
 include Amatch
 
 module SearchHelper
@@ -6,7 +6,7 @@ module SearchHelper
     query_down = query.downcase.strip
     words = query_down.split(/\s+/)
 
-    models = [BulletinPost, TeachingOffer, Project]
+    models = [ BulletinPost, TeachingOffer, Project ]
 
     results = models.flat_map do |model|
       model.all.select do |record|

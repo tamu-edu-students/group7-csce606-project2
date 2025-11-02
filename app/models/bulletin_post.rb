@@ -1,4 +1,4 @@
-require 'amatch'
+require "amatch"
 include Amatch
 
 class BulletinPost < ApplicationRecord
@@ -6,7 +6,7 @@ class BulletinPost < ApplicationRecord
 
     def self.fuzzy_search(query, threshold: 0.6)
         query_down = query.downcase.strip
-        words = query_down.split(/\s+/) 
+        words = query_down.split(/\s+/)
 
         all.select do |post|
         title = post.title.to_s.downcase
@@ -35,7 +35,7 @@ class BulletinPost < ApplicationRecord
             tokens = (title.split(/\W+/) + desc.split(/\W+/))
             tokens.map { |t| matcher.similar(t) }.max || 0
             end
-        end.sum * -1 
+        end.sum * -1
         end
-    end   
+    end
 end

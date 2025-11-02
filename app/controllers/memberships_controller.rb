@@ -1,7 +1,7 @@
 class MembershipsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_memberable
-  before_action :authorize_tutor!, only: [:index, :approve]
+  before_action :authorize_tutor!, only: [ :index, :approve ]
 
   # Learner requests to join
   def create

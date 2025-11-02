@@ -32,7 +32,7 @@ RSpec.describe "Users", type: :request do
         expect(response.body).to include("You are not authorized to access this page.")
       end
 
-      
+
       it "blocks destroy" do
         delete user_path(user)
         expect(response).to redirect_to(root_path)

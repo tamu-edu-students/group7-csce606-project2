@@ -32,9 +32,7 @@ class TeachingOffer < ApplicationRecord
         end
     end
 
-    def close_offer 
+    def close_offer
         update(offer_status: "closed")
     end
-
 end
-

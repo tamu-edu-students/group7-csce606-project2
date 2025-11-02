@@ -18,7 +18,6 @@ class TeachingOffersController < ApplicationController
 
   # GET /teaching_offers/1 or /teaching_offers/1.json
   def show
-    
   end
 
   # GET /teaching_offers/new

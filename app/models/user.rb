@@ -10,7 +10,7 @@ class User < ApplicationRecord
     has_many :joined_teaching_offers, through: :memberships, source: :memberable, source_type: "TeachingOffer"
 
     has_many :notifications, dependent: :destroy
-     
+
     validates :name, presence: true
     validates :email, presence: true,
                         format: { with: /\A[\w+\-.]+@tamu\.edu\z/i, message: "must be a tamu.edu email" }

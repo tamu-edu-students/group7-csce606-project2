@@ -14,7 +14,7 @@ class Membership < ApplicationRecord
   }
 
   validates :user_id, uniqueness: {
-    scope: [:memberable_type, :memberable_id],
+    scope: [ :memberable_type, :memberable_id ],
     message: "has already requested to join this"
   }
-end 
+end
