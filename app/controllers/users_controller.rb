@@ -1,13 +1,21 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit update destroy ]
+  before_action :set_user, only: %i[ show edit update destroy]
+  before_action :authorize_user!, only: [ :edit, :update, :destroy ]
 
   # GET /users or /users.json
   def index
     @users = User.all
+    render "devise/index"
   end
 
   # GET /users/1 or /users/1.json
   def show
+    @tab = params[:tab] || "projects"
+    @projects = @user.projects
+    @joined_projects =  @user.joined_projects
+    @teaching_offers = @user.teaching_offers
+    @joined_teaching_offers = @user.joined_teaching_offers
+    @posts = @user.bulletin_posts
   end
 
   # GET /users/new
@@ -18,6 +26,8 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
   end
+
+
 
   # POST /users or /users.json
   def create
@@ -57,11 +67,26 @@ class UsersController < ApplicationController
     end
   end
 
+  def account
+      @user = current_user
+      render "devise/account"
+    end
+
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params.expect(:id))
+      @user = User.find(params[:id])
     end
+
+    def authorize_user!
+     unless @user == current_user
+      redirect_to root_path, alert: "You are not authorized to access this page."
+     end
+    end
+
+
 
     # Only allow a list of trusted parameters through.
     def user_params

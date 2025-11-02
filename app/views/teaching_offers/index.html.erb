@@ -1,16 +1,73 @@
+<%# app/views/teaching_offers/index.html.erb %>
+
 <p style="color: green"><%= notice %></p>
+<p style="color: red"><%= alert %></p>
 
-<% content_for :title, "Teaching offers" %>
+<% content_for :title, "Teaching Offers" %>
 
-<h1>Teaching offers</h1>
+<h1>Teaching Offers</h1>
 
-<div id="teaching_offers">
-  <% @teaching_offers.each do |teaching_offer| %>
-    <%= render teaching_offer %>
-    <p>
-      <%= link_to "Show this teaching offer", teaching_offer %>
-    </p>
+<%# 🔍 Local Search Form — searches only TeachingOffers %>
+<% if user_signed_in? %>
+  <%= form_with(url: teaching_offers_path, method: :get, local: true) do |form| %>
+    <div>
+      <%= form.label :query, "Search teaching offers:" %>
+      <%= form.text_field :query, value: params[:query], placeholder: "Search by title or description..." %>
+      <%= form.submit "Search" %>
+    </div>
   <% end %>
-</div>
+  <%= link_to "Create Teaching Offer", new_teaching_offer_path, class: "btn btn-primary mt-2" %>
+<% else %>
+  <p>
+    <%= link_to "Log in", new_user_session_path %> to search or create teaching offers.
+  </p>
+<% end %>
 
-<%= link_to "New teaching offer", new_teaching_offer_path %>
+<%# 🧭 Display results if a search was performed %>
+<% if params[:query].present? %>
+  <h2>Search results for: "<%= params[:query] %>"</h2>
+
+  <% if @teaching_offers.present? %>
+    <ul>
+      <% @teaching_offers.each do |offer| %>
+        <li>
+          <strong><%= offer.title %></strong><br>
+          <%= truncate(offer.description, length: 120) %>
+          <p>
+            <% if user_signed_in? %>
+              <%= link_to "View Details", teaching_offer_path(offer) %>
+            <% else %>
+              <%= link_to "Login to view details", new_user_session_path %>
+            <% end %>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>No matching teaching offers found.</p>
+  <% end %>
+
+<% else %>
+  <%# 📘 Default view when no query — show all teaching offers %>
+  <h2>All Teaching Offers</h2>
+
+  <% if @teaching_offers.any? %>
+    <ul>
+      <% @teaching_offers.each do |offer| %>
+        <li>
+          <strong><%= offer.title %></strong><br>
+          <%= offer.description.truncate(100) %>
+          <p>
+            <% if user_signed_in? %>
+              <%= link_to "View Details", teaching_offer_path(offer) %>
+            <% else %>
+              <%= link_to "Login to view details", new_user_session_path %>
+            <% end %>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>No teaching offers available.</p>
+  <% end %>
+<% end %>

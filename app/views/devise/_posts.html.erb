@@ -1,0 +1,20 @@
+<% if posts.count == 0%>
+  <% if current_user == @user%>
+    <div class="profile-placeholder">
+      <%= image_tag "plus-svgrepo-com.svg", class: "small-icon", alt: "" %>
+      <%= link_to "Create a post to get started.", new_bulletin_post_path, class:"link"%>
+    </div>
+  <% else %>
+    <div><%= @user.name %> has no posts.</div>
+  <% end %>
+<% end %>
+
+<% posts.each do |post| %>
+  <div class="info-card">
+    <%= link_to bulletin_post_path(post), class:"link" do %>
+      <h3><%= post.title %></h3>
+      <p><%= post.description %></p>
+
+  <% end %>
+  </div>
+<% end %>

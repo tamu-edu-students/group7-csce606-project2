@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   resources :users
+
   resources :bulletin_posts
 
   resources :projects do
@@ -26,10 +27,15 @@ Rails.application.routes.draw do
   end
 
   resources :teaching_offers do
-    resources :memberships, only: [ :create, :destroy ]
+    resources :memberships, only: [ :create, :destroy, :index ] do
+      member do
+        patch :approve
+        patch :reject
+      end
+    end
   end
-  resources :memberships, only: [ :create, :destroy ]
 
+  get "/account", to: "users#account", as: "account"
 
   root "bulletin_posts#index"
   resources :bulletin_posts, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]

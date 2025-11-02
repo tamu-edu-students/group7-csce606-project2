@@ -1,10 +1,108 @@
-<p style="color: green"><%= notice %></p>
+<div class="profile-container">
+  <p style="color: green"><%= notice %></p>
 
-<%= render @teaching_offer %>
+  <%= render @teaching_offer %>
 
-<div>
-  <%= link_to "Edit this teaching offer", edit_teaching_offer_path(@teaching_offer) %> |
-  <%= link_to "Back to teaching offers", teaching_offers_path %>
+  <div>
+    <%# =============== LEARNER VIEW =============== %>
+      <% if user_signed_in? && current_user != @teaching_offer.author %>
+        <% membership = @teaching_offer.memberships.find_by(user: current_user) %>
 
-  <%= button_to "Destroy this teaching offer", @teaching_offer, method: :delete %>
+        <% if membership.nil? %>
+          <!-- Not yet joined -->
+          <%= button_to "Request to Join",
+                teaching_offer_memberships_path(@teaching_offer),
+                method: :post,
+                class: "btn btn-primary" %>
+
+        <% elsif membership.pending? %>
+          <!-- Already requested -->
+          <p class="text-warning mt-2">⏳ Your request is pending tutor approval.</p>
+          <%= button_to "Cancel Request",
+                teaching_offer_membership_path(@teaching_offer, membership),
+                method: :delete,
+                class: "btn btn-secondary" %>
+
+        <% elsif membership.approved? %>
+          <!-- Approved learner -->
+          <p class="text-success mt-2">✅ You are approved for this offer.</p>
+          <%= button_to "Leave",
+                teaching_offer_membership_path(@teaching_offer, membership),
+                method: :delete,
+                class: "btn btn-outline-danger" %>
+
+        <% elsif membership.rejected? %>
+          <!-- Rejected learner -->
+          <p class="text-danger mt-2">❌ Your request was rejected by the tutor.</p>
+        <% end %>
+      <% end %>
+
+
+    <%# =============== TUTOR VIEW =============== %>
+    <% if user_signed_in? && current_user == @teaching_offer.author %>
+      <h3 class="mt-4">Join Requests</h3>
+      <% pending_requests = @teaching_offer.pending_memberships.includes(:user) %>
+
+      <% if pending_requests.any? %>
+        <ul>
+          <% pending_requests.each do |membership| %>
+            <li>
+              <strong><%= membership.user.name %></strong>
+              (<%= membership.user.email %>)
+              <%= button_to "Approve",
+                    approve_teaching_offer_membership_path(@teaching_offer, membership),
+                    method: :patch,
+                    class: "btn btn-success btn-sm" %>
+              <%= button_to "Reject",
+              reject_teaching_offer_membership_path(@teaching_offer, membership),
+              method: :patch,
+              class: "btn btn-danger btn-sm",
+              data: { confirm: "Are you sure you want to reject this request?" } %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No pending requests.</p>
+      <% end %>
+
+      <h3 class="mt-4">Approved Learners</h3>
+      <% approved_learners = @teaching_offer.approved_memberships.includes(:user).map(&:user) %>
+      <% if approved_learners.any? %>
+        <ul>
+          <% approved_learners.each do |user| %>
+            <li><%= user.name %> (<%= user.email %>)</li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No learners have been approved yet.</p>
+      <% end %>
+
+      <h3 class="mt-4">Rejected Learners</h3>
+      <% rejected_memberships = @teaching_offer.memberships.where(status: "rejected").includes(:user) %>
+
+      <% if rejected_memberships.any? %>
+        <ul>
+          <% rejected_memberships.each do |membership| %>
+            <li><%= membership.user.name %> (<%= membership.user.email %>)</li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No rejected requests.</p>
+      <% end %>
+
+    <% end %>
+
+
+    <%# =============== COMMON FOOTER (both roles) =============== %>
+    <% if current_user == @teaching_offer.author %>
+      <div class="mt-4">
+        <%= link_to "Edit this teaching offer", edit_teaching_offer_path(@teaching_offer), class: "btn btn-outline-primary" %>
+        <%= button_to "Destroy this teaching offer", @teaching_offer, method: :delete, class: "btn btn-danger" %>
+      </div>
+    <% end %>
+
+    <div class="mt-3">
+      <%= link_to "Back to Teaching Offers", teaching_offers_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
 </div>

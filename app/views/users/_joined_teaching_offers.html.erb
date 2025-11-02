@@ -1,0 +1,16 @@
+<% if joined_teaching_offers.count == 0%>
+  <% if current_user == @user%>
+   <%= link_to "Join a teaching offer to get started.", teaching_offers_path, class:"link"%>
+  <% else %>
+    <div><%= @user.name %> has no joined teaching offers.</div>
+  <% end %>
+<% end %>
+
+<% joined_teaching_offers.each do |teaching_offer| %>
+  <%= link_to teaching_offer_path(teaching_offer), class:"link" do %>
+    <div class="info-card">
+      <h3><%= teaching_offer.title %></h3>
+      <p><%= teaching_offer.description %></p>
+    </div>
+  <% end %>
+<% end %>

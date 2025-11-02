@@ -6,6 +6,15 @@
 
 <br>
 
+
+
+<%= button_to @user,
+                      method: :delete,
+                      form: { data: { turbo_confirm: "Are you sure you want to delete this recipe?" } },
+                      aria: { label: "Delete User" } do %>
+          <%= image_tag "trash-svgrepo-com.svg", class: "small-icon", alt: "Delete Your Account" %>
+        <% end %>
+
 <div>
   <%= link_to "Show this user", @user %> |
   <%= link_to "Back to users", users_path %>
