@@ -8,6 +8,11 @@ class MembershipsController < ApplicationController
     membership = @memberable.memberships.build(user: current_user, status: :pending)
 
     if membership.save
+      Notification.create!(
+        user: @memberable.author,
+        notifiable: membership,
+        message: "#{current_user.name} has requested to join your #{@memberable.class.name.demodulize.downcase}."
+      )
       @memberable.memberships.reload
       redirect_back fallback_location: root_path, notice: "Join request sent!"
     else
@@ -24,6 +29,11 @@ class MembershipsController < ApplicationController
   def approve
     membership = @memberable.memberships.find(params[:id])
     membership.update(status: "approved")
+    Notification.create!(
+        user: membership.user,
+        notifiable: membership,
+        message: "Your request to join #{@memberable.class.name.demodulize.downcase} '#{@memberable.title}' has been approved!"
+    )
     redirect_back fallback_location: teaching_offer_memberships_path(@memberable),
                   notice: "#{membership.user.name} has been approved."
   end
@@ -34,6 +44,12 @@ class MembershipsController < ApplicationController
 
     if current_user == membership.memberable.author
       membership.update(status: "rejected")
+      Notification.create!(
+        user: membership.user,
+        notifiable: membership,
+        message: "Your request to join #{@memberable.class.name.demodulize.downcase} '#{@memberable.title}' has been rejected."
+      )
+
       redirect_back fallback_location: teaching_offer_path(membership.memberable),
                     notice: "#{membership.user.name}'s request has been rejected."
     else
