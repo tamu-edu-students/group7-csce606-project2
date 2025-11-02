@@ -65,7 +65,7 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # CLOSE /projects/1/close
+    # CLOSE /projects/1/close
     def close
     if current_user == @project.author
       @project.update(status: "closed")
@@ -75,7 +75,7 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # REOPEN /projects/1/reopen
+    # REOPEN /projects/1/reopen
     def reopen
     if current_user == @project.author
       @project.update(status: "open")
