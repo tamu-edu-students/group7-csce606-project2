@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "notifications/index"
   devise_for :users, path: "", path_names: {
     sign_up: "register",
     sign_in: "login",
@@ -34,6 +35,9 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  resources :notifications, only: [:index]
+
 
   get "/account", to: "users#account", as: "account"
 

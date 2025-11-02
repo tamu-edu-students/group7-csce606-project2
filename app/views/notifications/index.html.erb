@@ -1,0 +1,14 @@
+<h1>Notifications#index</h1>
+
+<% if @notifications.any? %>
+  <ul>
+    <% @notifications.each do |notification| %>
+      <li>
+        <strong><%= notification.created_at.strftime("%Y-%m-%d %H:%M") %>:</strong>
+        <%= notification.message %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No notifications yet.</p>
+<% end %>
