@@ -1,9 +1,9 @@
 class User < ApplicationRecord
     devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-    has_many :projects, inverse_of: :author, dependent: :destroy
-    has_many :teaching_offers,  inverse_of: :author, dependent: :destroy
-    has_many :bulletin_posts,  inverse_of: :author, dependent: :destroy
+    has_many :projects, foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+    has_many :teaching_offers,  foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+    has_many :bulletin_posts,  foreign_key: :author_id, inverse_of: :author, dependent: :destroy
 
     has_many :memberships, dependent: :destroy
     has_many :joined_projects, through: :memberships, source: :memberable, source_type: "Project"

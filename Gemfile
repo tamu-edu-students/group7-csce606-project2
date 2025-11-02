@@ -78,3 +78,5 @@ end
 group :production do
   gem "pg", "~> 1.5"
 end
+
+gem "amatch", "~> 0.5.0"

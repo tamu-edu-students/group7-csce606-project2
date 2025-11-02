@@ -10,13 +10,18 @@
   </p>
 
   <p>
-    <strong>Active:</strong>
-    <%= teaching_offer.active %>
+    <strong>Cap:</strong>
+    <%= teaching_offer.student_cap %>
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    <%= teaching_offer.offer_status %>
   </p>
 
   <p>
     <strong>Author:</strong>
-    <%= teaching_offer.author_id %>
+    <%= teaching_offer.author.name %>
   </p>
 
 </div>

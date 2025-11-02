@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_24_000829) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_01_204214) do
   create_table "bulletin_posts", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -27,8 +27,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_000829) do
     t.integer "memberable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["memberable_type", "memberable_id"], name: "index_memberships_on_memberable"
-    t.index ["memberable_type", "memberable_id"], name: "index_memberships_on_memberable_type_and_memberable_id", unique: true
+    t.string "status", default: "pending"
+    t.index ["memberable_type", "memberable_id", "user_id"], name: "idx_memberships_memberable_user", unique: true
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
@@ -60,9 +60,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_000829) do
     t.string "title"
     t.text "description"
     t.integer "author_id", null: false
-    t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "student_cap", default: 1, null: false
+    t.string "offer_status", default: "pending", null: false
     t.index ["author_id"], name: "index_teaching_offers_on_author_id"
   end
 

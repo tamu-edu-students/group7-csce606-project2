@@ -2,41 +2,63 @@
 
 <p style="color: green"><%= notice %></p>
 <p style="color: red"><%= alert %></p>
+
 <% content_for :title, "Bulletin posts" %>
 
 <h1>Bulletin</h1>
 
+<%# 🧭 Local Search Form — searches only BulletinPosts %>
 <% if user_signed_in? %>
   <%= form_with(url: bulletin_posts_path, method: :get, local: true) do |form| %>
     <div>
       <%= form.label :query, "Search by title or description:" %>
-      <%= form.text_field :query, value: params[:query] %>
+      <%= form.text_field :query, value: params[:query], placeholder: "Search bulletin posts..." %>
       <%= form.submit "Search" %>
     </div>
   <% end %>
-  <%= link_to "Create Post", new_bulletin_post_path, class: "btn btn-primary" %>
+  <%= link_to "Create Post", new_bulletin_post_path, class: "btn btn-primary mt-2" %>
 <% else %>
+  <p>
     <%= link_to "Log in", new_user_session_path %> to search or create posts.
+  </p>
 <% end %>
 
+<%# 🧩 Show search results if query present %>
 <% if params[:query].present? %>
   <h2>Search results for: "<%= params[:query] %>"</h2>
-<% end %>
 
-<div id="bulletin_posts">
-  <ul>
-    <% @bulletin_posts.each do |bulletin_post| %>
-      <li>
-        <strong><%= bulletin_post.title %></strong><br>
-        <%= bulletin_post.description.truncate(100) %>
-        <p>
-        <% if user_signed_in? %>
-            <%= link_to "Detail", bulletin_post %>
-          <% else %>
-            <%= link_to "Login to detail", new_user_session_path %>
-          <% end %>
-        </p>
-      </li>
-    <% end %>
-  </ul>
-</div>
+  <% if @bulletin_posts.present? %>
+    <ul>
+      <% @bulletin_posts.each do |post| %>
+        <li>
+          <strong><%= post.title %></strong><br>
+          <%= truncate(post.description, length: 120) %>
+          <p><%= link_to "Detail", bulletin_post_path(post) %></p>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>No matching bulletin posts found.</p>
+  <% end %>
+
+<% else %>
+  <%# Default list when no search query %>
+  <h2>All Bulletin Posts</h2>
+  <div id="bulletin_posts">
+    <ul>
+      <% @bulletin_posts.each do |post| %>
+        <li>
+          <strong><%= post.title %></strong><br>
+          <%= post.description.truncate(100) %>
+          <p>
+            <% if user_signed_in? %>
+              <%= link_to "Detail", bulletin_post_path(post) %>
+            <% else %>
+              <%= link_to "Login to view details", new_user_session_path %>
+            <% end %>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

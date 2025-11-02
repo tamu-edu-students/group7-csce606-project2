@@ -23,9 +23,13 @@ Rails.application.routes.draw do
   end
 
   resources :teaching_offers do
-    resources :memberships, only: [ :create, :destroy ]
+    resources :memberships, only: [ :create, :destroy, :index ] do
+      member do
+        patch :approve
+        patch :reject
+      end
+    end
   end
-  resources :memberships, only: [ :create, :destroy ]
 
   get "/account", to: "users#account", as: "account"
 
