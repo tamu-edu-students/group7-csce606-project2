@@ -1,42 +1,42 @@
-<%= form_with(model: project) do |form| %>
+<%= form_with(model: project, local: true) do |form| %>
   <% if project.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
-
+    <div id="error_explanation" style="color: red;">
+      <h2><%= pluralize(project.errors.count, "error") %> prevented this project from being saved:</h2>
       <ul>
-        <% project.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% project.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
+  <!-- Title -->
+  <div class="form-group" style="margin-bottom: 10px;">
+    <%= form.label :title %><br>
+    <%= form.text_field :title, class: "form-control", placeholder: "Example: FPGA Accelerator Design" %>
   </div>
 
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.textarea :description %>
+  <!-- Description -->
+  <div class="form-group" style="margin-bottom: 10px;">
+    <%= form.label :description %><br>
+    <%= form.text_area :description, rows: 5, class: "form-control", placeholder: "Describe the project goals, what you’re looking for, etc." %>
   </div>
 
-  <div>
-    <%= form.label :role_cnt, style: "display: block" %>
-    <%= form.number_field :role_cnt %>
+  <!-- Skills -->
+  <div class="form-group" style="margin-bottom: 10px;">
+    <%= form.label :skills, "Required Skills" %><br>
+    <%= form.text_field :skills, class: "form-control", placeholder: "e.g. Python, SystemVerilog, UVM" %>
+    <small style="color: gray;">Separate skills with commas. These will be used for search and filtering later.</small>
   </div>
 
-  <div>
-    <%= form.label :active, style: "display: block" %>
-    <%= form.checkbox :active %>
+  <!-- Roles -->
+  <div class="form-group" style="margin-bottom: 10px;">
+    <%= form.label :role_cnt, "Number of Collaborators Needed" %><br>
+    <%= form.number_field :role_cnt, class: "form-control", min: 1 %>
   </div>
 
-  <div>
-    <%= form.label :author_id, style: "display: block" %>
-    <%= form.text_field :author_id %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <!-- Submit -->
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
   </div>
 <% end %>

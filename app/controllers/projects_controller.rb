@@ -1,9 +1,16 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: %i[ show edit update destroy ]
+  before_action :set_project, only: %i[ show edit update destroy close reopen ]
 
   # GET /projects or /projects.json
   def index
-    @projects = Project.all
+    @projects = Project.where(status: "open")
+    if params[:search].present?
+      query = "%#{params[:search].downcase}%"
+      @projects = @projects.where(
+        "LOWER(title) LIKE ? OR LOWER(description) LIKE ? OR LOWER(skills) LIKE ?",
+        query, query, query
+      )
+    end
   end
 
   # GET /projects/1 or /projects/1.json
@@ -58,14 +65,34 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # CLOSE /projects/1/close
+    def close
+    if current_user == @project.author
+      @project.update(status: "closed")
+      redirect_to @project, notice: "Project listing closed!"
+    else
+      redirect_to @project, alert: "You don’t have permission to close this project."
+    end
+  end
+
+  # REOPEN /projects/1/reopen
+    def reopen
+    if current_user == @project.author
+      @project.update(status: "open")
+      redirect_to @project, notice: "Project listing reopened!"
+    else
+      redirect_to @project, alert: "You don’t have permission to reopen this project."
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = Project.find(params.expect(:id))
+      @project = Project.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def project_params
-      params.require(:project).permit(:title, :description, :role_cnt)
+      params.require(:project).permit(:title, :description, :skills, :role_cnt)
     end
 end

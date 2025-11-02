@@ -2,15 +2,44 @@
 
 <% content_for :title, "Projects" %>
 
-<h1>Projects</h1>
+<h1>Open Projects</h1>
+<%= form_with url: projects_path, method: :get, local: true do %>
+  <%= label_tag :search, "Search by title, description, or skill:" %>
+  <%= text_field_tag :search, params[:search], placeholder: "e.g. Verilog, ML, Python" %>
+  <%= submit_tag "Search" %>
+<% end %>
+<hr>
+<%= form_with url: projects_path, method: :get, local: true do %>
+  <%= label_tag :skills, "Filter by skill:" %>
+  <%= select_tag :search,
+      options_for_select(["Verilog", "Python", "Machine Learning", "UVM"], params[:search]),
+      include_blank: "All Skills" %>
+  <%= submit_tag "Filter" %>
+<% end %>
+<hr>
+<% if @projects.empty? %>
+  <p>No active projects available right now.</p>
+<% else %>
+  <div id="projects">
+    <% @projects.each do |project| %>
+      <%# Render each open project card %>
+      <div class="project-card" style="border: 1px solid #ccc; padding: 12px; margin-bottom: 10px; border-radius: 8px;">
+        <h3><%= link_to project.title, project_path(project) %></h3>
+        <p><%= truncate(project.description, length: 120) %></p>
+        <p><strong>Skills:</strong> <%= project.skills %></p>
+        <p><strong>Status:</strong> <%= project.status.capitalize %></p>
+        <p><strong>Roles available:</strong> <%= project.role_cnt %></p>
+        <p><strong>Creator:</strong> <%= project.author.email if project.author %></p>
+        <p>
+          <%= link_to "View Details", project_path(project), class: "btn btn-primary" %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+<% end %>
 
-<div id="projects">
-  <% @projects.each do |project| %>
-    <%= render project %>
-    <p>
-      <%= link_to "Show this project", project %>
-    </p>
-  <% end %>
-</div>
-
-<%= link_to "New project", new_project_path %>
+<% if user_signed_in? %>
+  <%= link_to "Create New Project", new_project_path, class: "btn btn-success" %>
+<% else %>
+  <p><%= link_to "Log in", new_user_session_path %> to create a new project.</p>
+<% end %>

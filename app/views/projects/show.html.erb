@@ -1,10 +1,49 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @project %>
+<% content_for :title, @project.title %>
 
-<div>
-  <%= link_to "Edit this project", edit_project_path(@project) %> |
-  <%= link_to "Back to projects", projects_path %>
+<h1><%= @project.title %></h1>
 
-  <%= button_to "Destroy this project", @project, method: :delete %>
-</div>
+<p><strong>Description:</strong></p>
+<p><%= @project.description %></p>
+
+<p><strong>Roles Available:</strong> <%= @project.role_cnt %></p>
+<p><strong>Status:</strong> <%= @project.status.capitalize %></p>
+
+<p><strong>Project Owner:</strong> <%= @project.author.email if @project.author %></p>
+
+<hr>
+
+<%# ----- Actions for project creator ----- %>
+<% if user_signed_in? && current_user == @project.author %>
+  <% if @project.open? %>
+    <%= button_to "Close Listing", close_project_path(@project),
+                  method: :patch,
+                  class: "btn btn-warning" %>
+  <% else %>
+    <%= button_to "Reopen Listing", reopen_project_path(@project),
+                  method: :patch,
+                  class: "btn btn-success" %>
+  <% end %>
+
+  <p>
+    <%= link_to "Edit", edit_project_path(@project), class: "btn btn-secondary" %> |
+    <%= link_to "Delete", project_path(@project),
+                 method: :delete,
+                 data: { confirm: "Are you sure?" },
+                 class: "btn btn-danger" %>
+  </p>
+<% elsif user_signed_in? %>
+  <% if @project.open? %>
+    <%= button_to "Apply to Join", "#", class: "btn btn-primary", disabled: true %>
+    <p><small>(“Apply” will be implemented later.)</small></p>
+  <% else %>
+    <p><em>This project is closed for new collaborators.</em></p>
+  <% end %>
+<% else %>
+  <p><%= link_to "Log in", new_user_session_path %> to apply or create your own projects.</p>
+<% end %>
+
+<hr>
+
+<%= link_to "Back to Projects", projects_path, class: "btn btn-outline-primary" %>
