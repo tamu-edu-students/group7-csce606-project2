@@ -2,7 +2,7 @@
   <% if current_user == @user%>
     <div class="profile-placeholder">
       <%= image_tag "plus-svgrepo-com.svg", class: "small-icon", alt: "" %>
-      <%= link_to "Create a project to get started.", new_project_path, class:"link"%>
+      <%= link_to "Create a project to get started.", new_project_path, class:"btn btn-success"%>
     </div>
   <% else %>
     <div><%= @user.name %> has no created projects.</div>
