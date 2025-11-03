@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_02_221416) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_02_221522) do
   create_table "bulletin_posts", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -40,6 +40,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_221416) do
     t.boolean "read", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "url"
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable_type_and_notifiable_id"
     t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"

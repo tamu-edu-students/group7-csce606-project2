@@ -2,10 +2,10 @@
 
 <% if @notifications.any? %>
   <ul>
-    <% @notifications.each do |notification| %>
-      <li>
+    <% @notifications.each_with_index do |notification, index| %>
+      <li class="<%= 'unread' if index < @unread_count %>">
         <strong><%= notification.created_at.strftime("%Y-%m-%d %H:%M") %>:</strong>
-        <%= notification.message %>
+        <%= link_to notification.message, notification.url %>
       </li>
     <% end %>
   </ul>
