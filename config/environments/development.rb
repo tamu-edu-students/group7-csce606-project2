@@ -94,5 +94,4 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   # config/environments/development.rb
   config.active_job.queue_adapter = :inline
-
 end

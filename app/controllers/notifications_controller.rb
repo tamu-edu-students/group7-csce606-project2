@@ -21,5 +21,4 @@ class NotificationsController < ApplicationController
       redirect_to notifications_path, alert: "Unable to update preference."
     end
   end
-
 end

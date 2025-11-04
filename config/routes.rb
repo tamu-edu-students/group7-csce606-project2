@@ -39,7 +39,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :notifications, only: [:index] do
+  resources :notifications, only: [ :index ] do
     patch :toggle_email, on: :collection
   end
 
