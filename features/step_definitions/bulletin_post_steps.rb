@@ -4,10 +4,10 @@
 Given("a bulletin post exists with title {string}, description {string}, and author email {string}") do |title, description, email|
   # Find the author by email, which should have been created by a user step
   author = User.find_by(email: email)
-  
+
   # Raise an error if the author isn't found, which helps debugging
   raise "Author user with email #{email} not found. Ensure a user is created first." unless author
-  
+
   # Create the bulletin post
   BulletinPost.create!(title: title, description: description, author: author)
 end

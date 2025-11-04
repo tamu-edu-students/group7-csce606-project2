@@ -30,8 +30,8 @@ RSpec.describe "BulletinPosts", type: :request do
 
       context "with a search query" do
         it "calls the search helper and renders the results" do
-          search_result = [{ type: "BulletinPost", record: bulletin_post }]
-          
+          search_result = [ { type: "BulletinPost", record: bulletin_post } ]
+
           allow_any_instance_of(BulletinPostsController).to receive(:fuzzy_search_all).with("Original").and_return(search_result)
 
           get bulletin_posts_path, params: { query: "Original" }
@@ -108,7 +108,7 @@ RSpec.describe "BulletinPosts", type: :request do
   describe "PATCH /bulletin_posts/:id" do
     context "with valid parameters" do
       let(:new_attributes) { { title: "Updated Title" } }
-      
+
       it "updates the requested bulletin_post" do
         patch bulletin_post_path(bulletin_post), params: { bulletin_post: new_attributes }
         bulletin_post.reload
@@ -125,7 +125,7 @@ RSpec.describe "BulletinPosts", type: :request do
       end
     end
   end
-  
+
   # --- DESTROY ACTION ---
   describe "DELETE /bulletin_posts/:id" do
     it "destroys the requested bulletin_post" do

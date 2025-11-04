@@ -2,7 +2,7 @@ class BulletinPostsController < ApplicationController
   # before_action :authenticate_user!, only: [:new, :create]
   # before_action :authenticate_user!  #the method to get user
   # Public landing page
-  skip_before_action :authenticate_user!, only: [ :index, :show, :destroy, :edit , :update]
+  skip_before_action :authenticate_user!, only: [ :index, :show, :destroy, :edit, :update ]
   before_action :set_bulletin_post, only: %i[edit update]
   include SearchHelper
   # GET /bulletin_posts or /bulletin_posts.json
