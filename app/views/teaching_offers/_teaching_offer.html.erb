@@ -1,27 +1,13 @@
-<div id="<%= dom_id teaching_offer %>">
-  <p>
-    <strong>Title:</strong>
-    <%= teaching_offer.title %>
-  </p>
-
-  <p>
-    <strong>Description:</strong>
-    <%= teaching_offer.description %>
-  </p>
-
-  <p>
-    <strong>Cap:</strong>
-    <%= teaching_offer.student_cap %>
-  </p>
-
-  <p>
-    <strong>Status:</strong>
-    <%= teaching_offer.offer_status %>
-  </p>
-
-  <p>
-    <strong>Author:</strong>
-    <%= teaching_offer.author.name %>
-  </p>
-
-</div>
+<li class="offer-card">
+ <%= link_to teaching_offer_path(offer), class: "offer-card-link" do %>
+  <div class="offer-card-inner">
+    <h3 class="offer-title"><%= offer.title %></h3>
+    <p class="offer-description"><%= offer.description.truncate(500) %></p>
+    <div class="offer-actions">
+      <% if !user_signed_in? %>
+        <%= link_to "Login to view details", new_user_session_path, class: "offer-btn offer-btn--secondary" %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+</li>

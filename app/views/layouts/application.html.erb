@@ -25,37 +25,43 @@
 
 
   <body>
-  <nav>
-    <% if user_signed_in? %>
-      <div class="navbar">
-        <div >
-          <%= link_to "Bulletin", root_path %> |      
-          <%= link_to "Learner's Hub", teaching_offers_path %>  |
-          <%= link_to "Project's Hub", projects_path %>
-        </div>
-        <div >
-          <%= link_to notifications_path, class: "nav-link position-relative" do %>
-          <%= image_tag "bell-svgrepo-com.svg", class: "small-icon", alt: "View Notifications" %>
-          <% unread_count = current_user.notifications.unread.count %>
-          <% if unread_count > 0 %>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              <%= unread_count %>
-            </span>
-          <% end %>
-        <% end %>
+  
+<nav class="navbar">
+  <% if user_signed_in? %>
+    <div class="nav-left">
+      <%= link_to "Bulletin", root_path, class: "nav-link" %>
+      <%= link_to "Learner's Hub", teaching_offers_path, class: "nav-link" %>
+       <%= link_to "Projects", projects_path, class: "nav-link" %>
+    </div>
 
-          <%= link_to current_user do %> 
-          <%= image_tag "profile-circle-svgrepo-com.svg", class: "small-icon", alt: "View Profile" %>
-          <% end %>
-          <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete } %> 
-        </div>
-      </div>
-    <% else %>
-      <%= link_to "Bulletin", root_path %> |
-      <%= link_to "Sign Up", new_user_registration_path %> |
-      <%= link_to "Login", new_user_session_path %>
-    <% end %>
-  </nav>
+    <div class="nav-right">
+      <%= link_to notifications_path, class: "nav-link nav-icon-link position-relative" do %>
+        <%= image_tag "bell-svgrepo-com.svg", class: "small-icon", alt: "View Notifications" %>
+        <% unread_count = current_user.notifications.unread.count %>
+        <% if unread_count > 0 %>
+          <span class="notification-badge">
+            <%= unread_count %>
+          </span>
+        <% end %>
+      <% end %>
+
+      <%= link_to current_user, class: "nav-link nav-icon-link" do %> 
+        <%= image_tag "profile-circle-svgrepo-com.svg", class: "small-icon", alt: "View Profile" %>
+      <% end %>
+
+      <%= link_to "Logout", destroy_user_session_path, class: "nav-link logout-link", data: { turbo_method: :delete } %>
+    </div>
+  <% else %>
+    <div class="nav-left">
+      <%= link_to "Bulletin", root_path, class: "nav-link" %>
+      <%= link_to "Sign Up", new_user_registration_path, class: "nav-link" %>
+      <%= link_to "Login", new_user_session_path, class: "nav-link" %>
+    </div>
+  <% end %>
+</nav>
+
+
+
   <div class="container-flex">
     <%= yield %>
   </div>
