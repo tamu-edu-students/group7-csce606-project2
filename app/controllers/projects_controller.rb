@@ -1,15 +1,19 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: %i[ show edit update destroy close reopen ]
-
+  include SearchHelper
   # GET /projects or /projects.json
   def index
-    @projects = Project.where(status: "open")
-    if params[:search].present?
-      query = "%#{params[:search].downcase}%"
-      @projects = @projects.where(
-        "LOWER(title) LIKE ? OR LOWER(description) LIKE ? OR LOWER(skills) LIKE ?",
-        query, query, query
-      )
+    # @project = Project.all
+    if params[:query].present?
+      if user_signed_in?
+        @projects = fuzzy_search_all(params[:query]).select { |r| r[:type] == "Project" }
+                        .map { |r| r[:record] }
+      else
+        redirect_to new_user_session_path,
+                    alert: "You must be logged in to search projects."
+      end
+    else
+      @projects = Project.all
     end
   end
 

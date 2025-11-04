@@ -2,7 +2,7 @@ class BulletinPostsController < ApplicationController
   # before_action :authenticate_user!, only: [:new, :create]
   # before_action :authenticate_user!  #the method to get user
   # Public landing page
-  skip_before_action :authenticate_user!, only: [ :index, :show, :destroy, :edit ]
+  skip_before_action :authenticate_user!, only: [ :index, :show, :destroy, :edit, :update ]
   before_action :set_bulletin_post, only: %i[edit update]
   include SearchHelper
   # GET /bulletin_posts or /bulletin_posts.json
@@ -11,9 +11,6 @@ class BulletinPostsController < ApplicationController
       if user_signed_in?
         @bulletin_posts = fuzzy_search_all(params[:query]).select { |r| r[:type] == "BulletinPost" }
                         .map { |r| r[:record] }
-      else
-        redirect_to new_user_session_path,
-                    alert: "You must be logged in to search bulletin posts."
       end
     else
       @bulletin_posts = BulletinPost.all
@@ -42,18 +39,7 @@ class BulletinPostsController < ApplicationController
 
     if @bulletin_post.save
       redirect_to @bulletin_post, notice: "Bulletin post was successfully created."
-    else
-      render :new, status: :unprocessable_entity
     end
-    # respond_to do |format|
-    #   if @bulletin_post.save
-    #     format.html { redirect_to @bulletin_post, notice: "Bulletin post was successfully created." }
-    #     format.json { render :show, status: :created, location: @bulletin_post }
-    #   else
-    #     format.html { render :new, status: :unprocessable_entity }
-    #     format.json { render json: @bulletin_post.errors, status: :unprocessable_entity }
-    #   end
-    # end
   end
 
   # PATCH/PUT /bulletin_posts/1 or /bulletin_posts/1.json
@@ -61,10 +47,7 @@ class BulletinPostsController < ApplicationController
     respond_to do |format|
       if @bulletin_post.update(bulletin_post_params)
         format.html { redirect_to @bulletin_post, notice: "Bulletin post was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @bulletin_post }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @bulletin_post.errors, status: :unprocessable_entity }
+        format.json { render json: @bulletin_post, status: :ok, location: @bulletin_post }
       end
     end
   end
