@@ -7,12 +7,13 @@ class TeachingOffersController < ApplicationController
       if user_signed_in?
         @teaching_offers = fuzzy_search_all(params[:query]).select { |r| r[:type] == "TeachingOffer" }
                         .map { |r| r[:record] }
+        
       else
         redirect_to new_user_session_path,
                     alert: "You must be logged in to search bulletin posts."
       end
     else
-      @teaching_offers = TeachingOffer.all
+      @teaching_offers = TeachingOffer.all.order(created_at: :desc)
     end
   end
 

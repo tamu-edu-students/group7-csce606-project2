@@ -1,73 +1,46 @@
-<%# app/views/teaching_offers/index.html.erb %>
+<div class="board-container">
 
-<p style="color: green"><%= notice %></p>
-<p style="color: red"><%= alert %></p>
-
-<% content_for :title, "Teaching Offers" %>
-
-<h1>Teaching Offers</h1>
-
-<%# 🔍 Local Search Form — searches only TeachingOffers %>
-<% if user_signed_in? %>
-  <%= form_with(url: teaching_offers_path, method: :get, local: true) do |form| %>
-    <div>
-      <%= form.label :query, "Search teaching offers:" %>
-      <%= form.text_field :query, value: params[:query], placeholder: "Search by title or description..." %>
-      <%= form.submit "Search" %>
-    </div>
+  <%# Flash messages %>
+  <% if notice.present? %>
+    <div class="board-message board-message--success"><%= notice %></div>
   <% end %>
-  <%= link_to "Create Teaching Offer", new_teaching_offer_path, class: "btn btn-primary mt-2" %>
-<% else %>
-  <p>
-    <%= link_to "Log in", new_user_session_path %> to search or create teaching offers.
-  </p>
-<% end %>
+  <% if alert.present? %>
+    <div class="board-message board-message--error"><%= alert %></div>
+  <% end %>
 
-<%# 🧭 Display results if a search was performed %>
-<% if params[:query].present? %>
-  <h2>Search results for: "<%= params[:query] %>"</h2>
+  <% content_for :title, "Teaching Offers" %>
 
-  <% if @teaching_offers.present? %>
-    <ul>
-      <% @teaching_offers.each do |offer| %>
-        <li>
-          <strong><%= offer.title %></strong><br>
-          <%= truncate(offer.description, length: 120) %>
-          <p>
-            <% if user_signed_in? %>
-              <%= link_to "View Details", teaching_offer_path(offer) %>
-            <% else %>
-              <%= link_to "Login to view details", new_user_session_path %>
-            <% end %>
-          </p>
-        </li>
+  <h1 class="board-heading">TEACHING OFFERS BOARD</h1>
+  <p class="board-subheading">Find a friend who can teach you something new.</p>
+
+  <% if user_signed_in? %>
+    <div class="board-search-section">
+      <%= form_with(url: teaching_offers_path, method: :get, local: true, class: "board-search-form") do |form| %>
+        <%= form.text_field :query, value: params[:query], placeholder: "Search by title or topic...", class: "board-search-input" %>
+        <%= form.submit "Search", class: "board-search-button" %>
       <% end %>
-    </ul>
+      <%= link_to "Create a New Offer", new_teaching_offer_path, class: "board-create-btn" %>
+    </div>
   <% else %>
-    <p>No matching teaching offers found.</p>
+    <p class="board-login-prompt">
+      <%= link_to "Log in", new_user_session_path, class: "board-login-link" %> to search or create teaching offers.
+    </p>
   <% end %>
 
-<% else %>
-  <%# 📘 Default view when no query — show all teaching offers %>
-  <h2>All Teaching Offers</h2>
+  <% if params[:query].present? %>
+    <h2 class="board-section-title">Search results for: "<%= params[:query] %>"</h2>
+  <% else %>
+    <h2 class="board-section-title">All Teaching Offers</h2>
+  <% end %>
 
   <% if @teaching_offers.any? %>
-    <ul>
+    <ul class="board-offer-grid">
       <% @teaching_offers.each do |offer| %>
-        <li>
-          <strong><%= offer.title %></strong><br>
-          <%= offer.description.truncate(100) %>
-          <p>
-            <% if user_signed_in? %>
-              <%= link_to "View Details", teaching_offer_path(offer) %>
-            <% else %>
-              <%= link_to "Login to view details", new_user_session_path %>
-            <% end %>
-          </p>
-        </li>
+        <%= render partial: "teaching_offer", locals: { offer: offer } %>
       <% end %>
     </ul>
   <% else %>
-    <p>No teaching offers available.</p>
+    <p class="board-empty-message">No teaching offers found.</p>
   <% end %>
-<% end %>
+
+</div>

@@ -1,64 +1,45 @@
-<%# app/views/bulletin_posts/index.html.erb %>
+<div class="board-container">
 
 <p style="color: green"><%= notice %></p>
 <p style="color: red"><%= alert %></p>
 
 <% content_for :title, "Bulletin posts" %>
 
-<h1>Bulletin</h1>
 
-<%# 🧭 Local Search Form — searches only BulletinPosts %>
+<h1 class="board-heading">BULLETIN BOARD</h1>
+<p class="board-subheading">View posts in your community.</p>
+
+<%# Local Search Form — searches only BulletinPosts %>
 <% if user_signed_in? %>
-  <%= form_with(url: bulletin_posts_path, method: :get, local: true) do |form| %>
+  <div class="board-search-section">
+  <%= form_with(url: bulletin_posts_path, method: :get, local: true, class: "board-search-form") do |form| %>
     <div>
-      <%= form.label :query, "Search by title or description:" %>
-      <%= form.text_field :query, value: params[:query], placeholder: "Search bulletin posts..." %>
-      <%= form.submit "Search" %>
+      <%= form.text_field :query, value: params[:query], placeholder: "Search bulletin posts...", class: "board-search-input"  %>
+      <%= form.submit "Search", class: "board-search-button" %>
     </div>
   <% end %>
-  <%= link_to "Create Post", new_bulletin_post_path, class: "btn btn-primary mt-2" %>
-<% else %>
-  <p>
-    <%= link_to "Log in", new_user_session_path %> to search or create posts.
-  </p>
-<% end %>
-
-<%# 🧩 Show search results if query present %>
-<% if params[:query].present? %>
-  <h2>Search results for: "<%= params[:query] %>"</h2>
-
-  <% if @bulletin_posts.present? %>
-    <ul>
-      <% @bulletin_posts.each do |post| %>
-        <li>
-          <strong><%= post.title %></strong><br>
-          <%= truncate(post.description, length: 120) %>
-          <p><%= link_to "Detail", bulletin_post_path(post) %></p>
-        </li>
-      <% end %>
-    </ul>
+  <%= link_to "Create Post", new_bulletin_post_path, class: "board-create-btn"  %>
+    </div>
   <% else %>
-    <p>No matching bulletin posts found.</p>
-  <% end %>
-
-<% else %>
-  <%# Default list when no search query %>
-  <h2>All Bulletin Posts</h2>
-  <div id="bulletin_posts">
-    <ul>
-      <% @bulletin_posts.each do |post| %>
-        <li>
-          <strong><%= post.title %></strong><br>
-          <%= post.description.truncate(100) %>
-          <p>
-            <% if user_signed_in? %>
-              <%= link_to "Detail", bulletin_post_path(post) %>
-            <% else %>
-              <%= link_to "Login to view details", new_user_session_path %>
-            <% end %>
-          </p>
-        </li>
-      <% end %>
-    </ul>
-  </div>
+    <p class="board-login-prompt">
+      <%= link_to "Log in", new_user_session_path, class: "board-login-link" %> to search or create teaching offers.
+    </p>
 <% end %>
+
+<%# Show search results if query present %>
+<% if params[:query].present? %>
+  <h2 class="board-section-title">Search results for: "<%= params[:query] %>"</h2>
+<% else %>
+    <h2 class="board-section-title">All Bulletin Posts</h2>
+<% end %>
+
+<% if @bulletin_posts.any? %>
+  <ul class="board-offer-grid">
+    <% @bulletin_posts.each do |post| %>
+      <%= render partial: "bulletin_post", locals: { post: post } %>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="board-empty-message">No teaching offers found.</p>
+<% end %>
+</div>

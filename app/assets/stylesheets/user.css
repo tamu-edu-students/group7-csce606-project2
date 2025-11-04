@@ -1,19 +1,15 @@
 :root {
-  --background-color: #fcfdff;
-  --container-background-color: #ffffff;
-  --accent-color: #bcd4ff;
-  --accent-color-2: #669cff;
-  --hover-color: #f0f0f0;
+  --bg-color: #fafafa;
+  --hover-color: #f8f8f8;
   --text-color: #333;
   --header-color: #222;
   --border-separator: #ededed;
-  --card-background: #fafafa;
 }
 
 
 body {
-  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  background-color: var(--background-color);
+  font-family:Arial, Helvetica, sans-serif;
+  background-color: var(--bg-color);
   color: var(--text-color);
 }
 
@@ -22,7 +18,7 @@ body {
   min-height: 1000px;
   margin: 3rem auto;
   padding: 2rem;
-  background-color: var(--container-background-color);
+  background-color: var(--bg-container);
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   text-align: center;
@@ -78,6 +74,7 @@ h2 {
 }
 
 .info-card {
+  background-color: var(--card-bg);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -191,5 +188,60 @@ summary::-webkit-details-marker {
 
 
 .unread {
-  color: red;
+  color: var(--primary-color);
+}
+
+.notifications-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 800px;
+  margin: 2rem auto;
+  background: var(--background, #fff);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.notification-item {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+
+.notification-item.unread {
+  background: #f7f9ff;
+  border-left: 4px solid var(--accent-color);
+  font-weight: 600;
+}
+
+.notification-header {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 0.25rem;
+}
+
+.notification-time {
+  font-family: monospace;
+}
+
+.notification-body {
+  font-size: 0.95rem;
+}
+
+.notification-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.notification-link:hover {
+  text-decoration: underline;
+}
+
+.no-notifications {
+  text-align: center;
+  color: #777;
+  padding: 2rem;
+  font-size: 1rem;
 }

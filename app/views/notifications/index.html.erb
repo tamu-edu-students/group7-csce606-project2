@@ -1,14 +1,27 @@
-<h1>Notifications#index</h1>
+<div class="board-container">
+
+<h1 class="board-heading">NOTIFICATIONS</h1>
+
 
 <% if @notifications.any? %>
-  <ul>
+  <% @unread_count = 2 %>
+  <ul class="notifications-list">
     <% @notifications.each_with_index do |notification, index| %>
-      <li class="<%= 'unread' if index < @unread_count %>">
-        <strong><%= notification.created_at.strftime("%Y-%m-%d %H:%M") %>:</strong>
-        <%= link_to notification.message, notification.url %>
+      <li class="notification-item <%= 'unread' if index < @unread_count %>">
+        <div class="notification-header">
+          <span class="notification-time">
+            <%= notification.created_at.strftime("%b %d, %Y %H:%M") %>
+          </span>
+        </div>
+        <div class="notification-body">
+          <%= link_to notification.message, notification.url, class: "notification-link" %>
+        </div>
       </li>
+
     <% end %>
   </ul>
 <% else %>
-  <p>No notifications yet.</p>
+  <p class="no-notifications">No new notifications.</p>
 <% end %>
+
+</div>
