@@ -1,9 +1,13 @@
 Rails.application.routes.draw do
+  get "notifications/index"
   devise_for :users, path: "", path_names: {
     sign_up: "register",
     sign_in: "login",
     sign_out: "logout"
+  }, controllers: {
+    confirmations: "users/confirmations"
   }
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -33,6 +37,10 @@ Rails.application.routes.draw do
         patch :reject
       end
     end
+  end
+
+  resources :notifications, only: [ :index ] do
+    patch :toggle_email, on: :collection
   end
 
   get "/account", to: "users#account", as: "account"
