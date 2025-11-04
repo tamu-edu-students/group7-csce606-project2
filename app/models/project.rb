@@ -5,10 +5,10 @@ class Project < ApplicationRecord
     validates :title, :description, :skills, presence: true
 
     def open?
-    status == "open"
+        status == "open"
     end
 
     def closed?
-    status == "closed"
+        status == "closed"
     end
 end

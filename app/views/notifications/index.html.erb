@@ -1,3 +1,23 @@
+
+<div style="margin-bottom: 1rem;">
+  <p>
+    <strong>Email Notifications:</strong>
+    <% if current_user.email_notifications? %>
+      <span style="color: green;">Enabled ✅</span>
+    <% else %>
+      <span style="color: red;">Disabled ❌</span>
+    <% end %>
+  </p>
+
+  <%= form_with model: current_user, url: toggle_email_notifications_path, method: :patch, local: true do |f| %>
+    <label>
+      <%= f.check_box :email_notifications, checked: current_user.email_notifications %>
+      Receive email notifications
+    </label>
+    <%= f.submit "Update", class: "btn btn-sm btn-primary" %>
+  <% end %>
+</div>
+
 <h1>Notifications#index</h1>
 
 <% if @notifications.any? %>
