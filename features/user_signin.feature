@@ -26,3 +26,11 @@ Feature: User Sign In
     When I click "Logout"
     Then I should see "Signed out successfully."
     And I should be on the landing page
+
+  Scenario: Unconfirmed user cannot log in
+    Given an unconfirmed user exists with name "Unconfirmed" and email "unconfirmed@tamu.edu" and password "Passw0rd!"
+    When I am on the login page
+    And I fill in "Email" with "unconfirmed@tamu.edu"
+    And I fill in "Password" with "Passw0rd!"
+    And I press "Log in"
+    Then I should see "You have to confirm your email address before continuing."
