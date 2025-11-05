@@ -24,7 +24,8 @@ Given('a user exists with name {string} and email {string} and password {string}
     name: name,
     password: password,
     password_confirmation: password,
-    confirmed_at: Time.now # ensures confirmed user
+    confirmed_at: Time.now, # ensures confirmed user
+    email_notifications: true
   )
 end
 
@@ -37,10 +38,14 @@ Then('I should be on the landing page') do
 end
 
 Given("I am logged in as {string} with password {string}") do |email, password|
+  Capybara.reset_sessions!  # ensures a clean browser session before login
   visit new_user_session_path
+
   fill_in "Email", with: email
   fill_in "Password", with: password
   click_button "Log in"
+
+  # Devise flash message check
   expect(page).to have_content("Signed in successfully")
 end
 
@@ -83,4 +88,18 @@ Given('an unconfirmed user exists with name {string} and email {string} and pass
     password: password,
     password_confirmation: password
   )
+end
+
+
+Then("a user should exist with email {string}") do |email|
+  user = User.find_by(email: email)
+  expect(user).not_to be_nil
+end
+
+Given("I am on the user creation page") do
+  visit new_user_path
+end
+
+Then("I should be on the user creation page") do
+  expect(page).to have_current_path(new_user_path)
 end

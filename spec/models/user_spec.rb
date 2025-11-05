@@ -1,43 +1,128 @@
 # spec/models/user_spec.rb
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe User, type: :model do
-  it "is valid with valid attributes" do
-    user = User.new(name: "Tasnia", email: "tasniajamal@tamu.edu", password: "passw0rd!")
-    expect(user).to be_valid
+  #
+  # ───────────────────────────────
+  # Validations
+  # ───────────────────────────────
+  #
+  describe "validations" do
+    it "is valid with valid attributes" do
+      user = build(:user)
+      expect(user).to be_valid
+    end
+
+    it "is invalid with duplicate email (case-insensitive)" do
+      create(:user, email: "saswat@tamu.edu")
+      dup = build(:user, email: "SASWAT@tamu.edu")
+      expect(dup).not_to be_valid
+    end
+
+    it "adds an error for duplicate email" do
+      create(:user, email: "saswat@tamu.edu")
+      dup = build(:user, email: "saswat@tamu.edu")
+      dup.valid?
+      expect(dup.errors[:email]).to include("has already been taken")
+    end
+
+    it "rejects non-tamu emails" do
+      user = build(:user, email: "someone@gmail.com")
+      expect(user).not_to be_valid
+    end
+
+    it "adds an error for non-tamu emails" do
+      user = build(:user, email: "someone@gmail.com")
+      user.valid?
+      expect(user.errors[:email]).to include("must be a tamu.edu email")
+    end
+
+    it "is invalid with short password" do
+      user = build(:user, password: "short1")
+      expect(user).not_to be_valid
+    end
+
+    it "is invalid without a name" do
+      user = build(:user, name: "")
+      expect(user).not_to be_valid
+    end
   end
 
-  it "rejects non-tamu emails" do
-    user = User.new(name: "Tasnia", email: "itasniaj@gmail.com", password: "passw0rd!")
-    expect(user).not_to be_valid
+  #
+  # ───────────────────────────────
+  # Confirmable
+  # ───────────────────────────────
+  #
+  describe "confirmable" do
+    let(:unconfirmed_user) { create(:user, :unconfirmed) }
+
+    it "is unconfirmed after creation" do
+      expect(unconfirmed_user.confirmed?).to be false
+    end
+
+    it "generates a confirmation token" do
+      expect(unconfirmed_user.confirmation_token).to be_present
+    end
+
+    it "has nil confirmed_at initially" do
+      expect(unconfirmed_user.confirmed_at).to be_nil
+    end
+
+    it "becomes confirmed after calling confirm" do
+      unconfirmed_user.confirm
+      expect(unconfirmed_user.confirmed?).to be true
+    end
+
+    it "sets confirmed_at timestamp after confirmation" do
+      unconfirmed_user.confirm
+      expect(unconfirmed_user.confirmed_at).not_to be_nil
+    end
+
+    it "is not active for authentication before confirmation" do
+      expect(unconfirmed_user.active_for_authentication?).to be false
+    end
   end
 
-  it "shows error for non-tamu emails" do
-    user = User.new(name: "Tasnia", email: "itasniaj@gmail.com", password: "passw0rd!")
-    user.valid?
-    expect(user.errors[:email]).to include("must be a tamu.edu email")
-  end
+  #
+  # ───────────────────────────────
+  # Recoverable
+  # ───────────────────────────────
+  #
+  describe "recoverable" do
+    let(:user) { create(:user) } # confirmed by default in factory
 
-  it "rejects short passwords" do
-    user = User.new(name: "Tasnia", email: "tasniajamal@tamu.edu", password: "short1")
-    expect(user).not_to be_valid
-  end
+    it "generates a reset token when instructions are sent" do
+      token = user.send_reset_password_instructions
+      expect(token).to be_present
+    end
 
-  it "requires a name" do
-    user = User.new(name: "", email: "tasniajamal@tamu.edu", password: "passw0rd!")
-    expect(user).not_to be_valid
-    # expect(user.errors[:name]).to be_present
-  end
+    it "stores reset_password_token after sending instructions" do
+      user.send_reset_password_instructions
+      expect(user.reset_password_token).to be_present
+    end
 
-  it "has no duplicate accounts with same email" do
-    user = User.create!(name: "Tasnia", email: "tasniajamal@tamu.edu", password: "passw0rd!")
-    duplicate_user = User.new(name: "Another Tasnia", email: "tasniajamal@tamu.edu", password: "anotherPass1!")
-    expect(duplicate_user).not_to be_valid
-  end
-  it "shows error for duplicate email" do
-    user = User.create!(name: "Tasnia", email: "tasniajamal@tamu.edu", password: "passw0rd!")
-    duplicate_user = User.new(name: "Another Tasnia", email: "tasniajamal@tamu.edu", password: "anotherPass1!")
-    duplicate_user.valid?
-    expect(duplicate_user.errors[:email]).to include("has already been taken")
+    it "stores reset_password_sent_at timestamp" do
+      user.send_reset_password_instructions
+      expect(user.reset_password_sent_at).not_to be_nil
+    end
+
+    it "resets password successfully with valid token" do
+      token = user.send_reset_password_instructions
+      reset_user = described_class.reset_password_by_token(
+        reset_password_token: token,
+        password: "NewPassw0rd!",
+        password_confirmation: "NewPassw0rd!"
+      )
+      expect(reset_user.valid_password?("NewPassw0rd!")).to be true
+    end
+
+    it "adds an error for invalid reset token" do
+      reset_user = described_class.reset_password_by_token(
+        reset_password_token: "invalid",
+        password: "NewPassw0rd!",
+        password_confirmation: "NewPassw0rd!"
+      )
+      expect(reset_user.errors[:reset_password_token]).to be_present
+    end
   end
 end

@@ -18,9 +18,16 @@ class TeachingOffer < ApplicationRecord
     has_many :approved_memberships, -> { where(status: :approved) }, as: :memberable, class_name: "Membership"
     validate :memberships_cannot_exceed_cap
 
+    validates :title, presence: true
+    validates :description, presence: true
+    validates :student_cap, presence: true,
+                            numericality: { only_integer: true, greater_than: 0 }
     def memberships_cannot_exceed_cap
-        if approved_memberships.size > student_cap
-            errors.add(:memberships, "cannot exceed membership cap of #{student_cap}")
+        return if student_cap.blank?
+
+        approved_count = approved_memberships.count
+        if approved_count > student_cap
+            errors.add(:base, "cannot have more than #{student_cap} approved learners")
         end
     end
 

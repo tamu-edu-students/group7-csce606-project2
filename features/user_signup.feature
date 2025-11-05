@@ -14,6 +14,7 @@ Feature: User Sign Up
     And I fill in "Password confirmation" with "Passw0rd!"
     And I press "Sign up"
     Then I should see "A message with a confirmation link has been sent to your email address"
+    And a user should exist with email "saswat@tamu.edu"
   
   Scenario: User confirms email
     Given an unconfirmed user exists with name "Saswat" and email "saswat@tamu.edu" and password "Passw0rd!"

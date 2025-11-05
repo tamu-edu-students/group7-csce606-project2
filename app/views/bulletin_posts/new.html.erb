@@ -1,13 +1,14 @@
 <%# app/views/bulletin_posts/new.html.erb %>
 
 <% content_for :title, "New Bulletin Post" %>
-
-<h1>New Bulletin Post</h1>
+<div class="board-container">
+<h1 class="board-heading">New Bulletin Post</h1>
 
 <%= render "form", bulletin_post: @bulletin_post %>
 
 <br>
 
 <div>
-  <%= link_to "Back to bulletin posts", bulletin_posts_path %>
+  <%= link_to "View all bulletin posts", bulletin_posts_path %>
+</div>
 </div>
