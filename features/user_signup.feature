@@ -10,10 +10,16 @@ Feature: User Sign Up
     Given I am on the sign up page
     When I fill in "Name" with "Saswat"
     And I fill in "Email" with "saswat@tamu.edu"
-    And I fill in "Password" with "passw0rd!"
-    And I fill in "Password confirmation" with "passw0rd!"
+    And I fill in "Password" with "Passw0rd!"
+    And I fill in "Password confirmation" with "Passw0rd!"
     And I press "Sign up"
-    Then I should see "Welcome! You have signed up successfully."
+    Then I should see "A message with a confirmation link has been sent to your email address"
+    And a user should exist with email "saswat@tamu.edu"
+  
+  Scenario: User confirms email
+    Given an unconfirmed user exists with name "Saswat" and email "saswat@tamu.edu" and password "Passw0rd!"
+    When the user visits the confirmation link
+    Then I should see "Your email has been confirmed successfully"
 
   Scenario: Sign-up with invalid email
     Given I am on the sign up page

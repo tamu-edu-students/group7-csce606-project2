@@ -1,5 +1,5 @@
 class TeachingOffersController < ApplicationController
-  before_action :set_teaching_offer, only: %i[ show edit update destroy ]
+  before_action :set_teaching_offer, only: %i[ show edit update ]
   include SearchHelper
   # GET /teaching_offers or /teaching_offers.json
   def index
@@ -7,13 +7,14 @@ class TeachingOffersController < ApplicationController
       if user_signed_in?
         @teaching_offers = fuzzy_search_all(params[:query]).select { |r| r[:type] == "TeachingOffer" }
                         .map { |r| r[:record] }
-        
+
+
       else
         redirect_to new_user_session_path,
-                    alert: "You must be logged in to search bulletin posts."
+                    alert: "You must be logged in to search teaching offers."
       end
     else
-      @teaching_offers = TeachingOffer.all.order(created_at: :desc)
+      @teaching_offers = TeachingOffer.where(offer_status: "pending").order(created_at: :desc)
     end
   end
 
@@ -59,15 +60,13 @@ class TeachingOffersController < ApplicationController
     end
   end
 
-  # DELETE /teaching_offers/1 or /teaching_offers/1.json
-  def destroy
-    @teaching_offer.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to teaching_offers_path, notice: "Teaching offer was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+  def close
+    @teaching_offer = TeachingOffer.find(params[:id])
+    @teaching_offer.close_offer
+    redirect_to @teaching_offer, notice: "Teaching offer closed successfully."
   end
+
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

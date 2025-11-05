@@ -36,6 +36,9 @@ Rails.application.routes.draw do
   end
 
   resources :teaching_offers do
+    member do
+      patch :close
+    end
     resources :memberships, only: [ :create, :destroy, :index ] do
       member do
         patch :approve

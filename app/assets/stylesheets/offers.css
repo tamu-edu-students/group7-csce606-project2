@@ -128,6 +128,22 @@
   box-shadow: var(--shadow-sm);
 }
 
+.board-submit-btn {
+  background: rgb(220, 211, 211);
+  width: 100%;
+  border: none;
+  color: var(--primary-color);
+  padding: 0.75rem 1.2rem;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.board-submit-btn:hover {
+  background-color: var(--accent-color);
+  box-shadow: var(--shadow-sm);
+}
 
 
 
@@ -268,4 +284,26 @@
   .offer-actions {
     text-align: center;
   }
+}
+
+
+
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }

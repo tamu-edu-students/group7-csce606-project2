@@ -80,3 +80,11 @@ group :production do
 end
 
 gem "amatch", "~> 0.5.0"
+
+group :test do
+  gem "shoulda-matchers", "~> 6.0"
+end
+
+group :test do
+  gem "rails-controller-testing"
+end

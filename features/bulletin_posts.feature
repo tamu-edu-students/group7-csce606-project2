@@ -28,7 +28,7 @@ Feature: Bulletin Posts
     When I visit the new bulletin post page
     And I fill in "Title" with "A New Valid Title"
     And I fill in "Description" with "Some valid description."
-    And I press "Create"
+    And I press "Post"
     Then I should see "Bulletin post was successfully created."
     And I should see "A New Valid Title"
     And I should see "Owner User"
@@ -36,7 +36,7 @@ Feature: Bulletin Posts
   Scenario: Guest updates a post
     When I visit the edit page for the post "Original Title"
     And I fill in "Title" with "Updated Title"
-    And I press "Update"
+    And I press "Post"
     Then I should see "Bulletin post was successfully updated."
     And I should see "Updated Title"
 

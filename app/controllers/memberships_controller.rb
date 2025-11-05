@@ -29,19 +29,23 @@ class MembershipsController < ApplicationController
   # Tutor approves a join request
   def approve
     membership = @memberable.memberships.find(params[:id])
-    membership.update(status: "approved")
 
-    Notification.create!(
-      user: membership.user,
-      notifiable: membership,
-      message: "Your request to join #{memberable_name} '#{@memberable.title}' has been approved!",
-      url: memberable_path(@memberable)
-    )
+    if membership.update(status: "approved")
+      Notification.create!(
+        user: membership.user,
+        notifiable: membership,
+        message: "Your request to join #{memberable_name} '#{@memberable.title}' has been approved!",
+        url: memberable_path(@memberable)
+      )
 
-    redirect_back fallback_location: memberable_memberships_path(@memberable),
-                  notice: "#{membership.user.name} has been approved."
+      redirect_back fallback_location: memberable_memberships_path(@memberable),
+                    notice: "#{membership.user.name} has been approved."
+    else
+       Rails.logger.warn "APPROVAL FAILED: #{membership.errors.full_messages.inspect}"
+      redirect_back fallback_location: memberable_memberships_path(@memberable),
+                    alert: membership.errors.full_messages.to_sentence
+    end
   end
-
   # Tutor rejects a join request
   def reject
     membership = Membership.find(params[:id])
