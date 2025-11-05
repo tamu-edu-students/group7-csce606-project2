@@ -112,6 +112,186 @@ CD-2 | As a developer, I want to automatically deploy to Heroku after successful
 CD-3 | As a developer, I want Architecture Decision Records and feature docs so that the team understands key design choices. | - ADRs stored under /docs/adr.<br>- README updated after every major increment.
 
 
+
+## System Architecture
+### 1. System Architecture Diagram
+The application follows a standard monolithic Rails architecture, enhanced with modern frontend technologies and a robust backend for background jobs and caching. It is designed to be deployed as a single unit, with external dependencies for mail and (in production) a database.
+
+
+
+```mermaid
+graph TD
+    subgraph "Client Layer"
+        A["User's Web Browser"]
+    end
+
+    subgraph "Application Layer (Rails)"
+        B["Puma Web Server"] --> C{"Action Dispatch (Router)"};
+        C -->|Web Request| D["Controllers"];
+        D --> E["Views (ERB + Turbo)"];
+        D --> F["Models (Active Record)"];
+        D --> G["Services/Helpers"];
+        F --> H["Database"];
+        E --> A;
+
+        subgraph "Background Services"
+            J["Solid Queue"]
+            K["Solid Cache"]
+        end
+
+        F --> J;
+        F --> K;
+        J --> L;
+        J --> H;
+    end
+    
+    subgraph "Data Layer"
+        H["PostgreSQL / SQLite3"]
+    end
+
+    subgraph "External Services"
+        L["SendGrid SMTP"]
+    end
+
+    A -->|HTTP/HTTPS Request| B;
+    B --> A;
+
+```
+
+#### Client Layer: The user interacts with the application via a standard web browser. The frontend experience is powered by server-rendered ERB templates (.html.erb) and made dynamic using Hotwire (Turbo) and Stimulus.
+
+#### Application Layer: A standard Ruby on Rails MVC (Model-View-Controller) application.
+
+- Web Server: Puma is used as the web server.
+
+- Routing: config/routes.rb defines all application URLs, including Devise routes for authentication and nested resources for projects/offers and their memberships.
+
+- Controllers: Handle web requests, interact with models, and render views (e.g., ProjectsController, TeachingOffersController, MembershipsController).
+
+- Models: Active Record objects represent the database tables and business logic (e.g., User, Project, Membership).
+
+- Background Jobs: Uses Solid Queue for processing background tasks, primarily for sending email notifications.
+
+- Caching: Uses Solid Cache (in production) for fragment and data caching.
+
+#### Data Layer: The application uses SQLite3 in development and PostgreSQL in production.
+
+#### External Services: SendGrid is used for delivering all outbound email, including registration confirmations and notifications.
+
+
+
+### 2. System Flow Diagram (Sequence)
+This diagram shows the sequence of events when a User (Learner) requests to join a Teaching Offer.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Browser
+    participant RailsServer as Rails Server
+    participant Database
+    participant SendGrid as Email Service
+
+    User->>Browser: 1. Clicks "Request to Join"
+    Browser->>RailsServer: 2. POST /teaching_offers/[id]/memberships
+    RailsServer->>RailsServer: 3. MembershipsController#create
+    RailsServer->>Database: 4. Find TeachingOffer (Tutor)
+    Database-->>RailsServer: 5. Returns TeachingOffer
+    RailsServer->>Database: 6. Create Membership (status: "pending")
+    Database-->>RailsServer: 7. Membership saved
+    
+    par
+        RailsServer->>Database: 8a. Create Notification (for Tutor)
+        Database-->>RailsServer: 9a. Notification saved
+        
+        Note right of RailsServer: Notification.after_create_commit hook fires
+        RailsServer->>RailsServer: 10a. Enqueue NotificationMailer Job (Solid Queue)
+        RailsServer-->>SendGrid: 11a. Deliver email (via job)
+        SendGrid-->>User: 12a. Email sent to Tutor
+    and
+        RailsServer->>Browser: 8b. HTTP 303 Redirect (back to offer page)
+    end
+
+    Browser->>RailsServer: 13. GET /teaching_offers/[id]
+    RailsServer->>Database: 14. Load TeachingOffer and pending membership
+    Database-->>RailsServer: 15. Returns data
+    RailsServer->>Browser: 16. Render teaching_offers/show view
+    Browser->>User: 17. Display page with "Request Pending" message
+```
+
+### 3. Database / Class Diagram (ERD)
+This diagram illustrates the core models and their relationships. The Membership model is a key polymorphic table that connects Users to either Projects or TeachingOffers.
+
+```mermaid
+erDiagram
+    User {
+        int id PK
+        string name
+        string email
+        string encrypted_password
+        boolean email_notifications
+    }
+
+    BulletinPost {
+        int id PK
+        int author_id FK
+        string title
+        text description
+    }
+
+    Project {
+        int id PK
+        int author_id FK
+        string title
+        text description
+        string skills
+        int role_cnt
+        string status
+    }
+
+    TeachingOffer {
+        int id PK
+        int author_id FK
+        string title
+        text description
+        int student_cap
+        string offer_status
+    }
+
+    Membership {
+        int id PK
+        int user_id FK
+        int memberable_id FK
+        string memberable_type
+        string status
+    }
+
+    Notification {
+        int id PK
+        int user_id FK
+        int notifiable_id FK
+        string notifiable_type
+        string message
+        boolean read
+        string url
+    }
+
+    User ||--o{ BulletinPost : "has_many (author)"
+    User ||--o{ Project : "has_many (author)"
+    User ||--o{ TeachingOffer : "has_many (author)"
+    User ||--o{ Membership : "has_many"
+    User ||--o{ Notification : "has_many"
+
+    Project ||--o{ Membership : "memberable"
+    TeachingOffer ||--o{ Membership : "memberable"
+    
+    Membership }o--|| User : "belongs_to"
+    Membership }o--|{ Project : "belongs_to"
+    Membership }o--|{ TeachingOffer : "belongs_to"
+    
+    Notification }o--|| User : "belongs_to"
+```
+
+
 ## Deployment
 ### Prerequisites
 
@@ -293,186 +473,3 @@ config.ssl_options = { redirect: { status: 301, body: nil } }
    config.assets.digest = true
    config.assets.compress = true
    ```
-
-## System Architecture
-### 1. System Architecture Diagram
-The application follows a standard monolithic Rails architecture, enhanced with modern frontend technologies and a robust backend for background jobs and caching. It is designed to be deployed as a single unit, with external dependencies for mail and (in production) a database.
-
-​```mermaid
-graph TD
-    subgraph Client Layer
-        A[User's Web Browser]
-    end
-
-    subgraph Application Layer (Rails)
-        direction TD
-        B(Puma Web Server)
-        C{Action Dispatch (Router)}
-        D[Controllers]
-        E[Views (ERB + Turbo)]
-        F[Models (Active Record)]
-        G[Services/Helpers]
-        
-        subgraph Background Services
-            J(Solid Queue)
-            K(Solid Cache)
-        end
-    end
-    
-    subgraph Data Layer
-        H(PostgreSQL / SQLite3)
-    end
-
-    subgraph External Services
-        L(SendGrid SMTP)
-    end
-
-    A -->|HTTP/HTTPS Request| B
-    B --> C
-    C -->|Web Request| D
-    D --> E
-    D --> F
-    D --> G
-    
-    F --> H
-    F --> J
-    F --> K
-    J --> L
-    J --> H
-    
-    E --> A
-    B --> A
-​```
-
-#### Client Layer: The user interacts with the application via a standard web browser. The frontend experience is powered by server-rendered ERB templates (.html.erb) and made dynamic using Hotwire (Turbo) and Stimulus.
-
-#### Application Layer: A standard Ruby on Rails MVC (Model-View-Controller) application.
-
-- Web Server: Puma is used as the web server.
-
-- Routing: config/routes.rb defines all application URLs, including Devise routes for authentication and nested resources for projects/offers and their memberships.
-
-- Controllers: Handle web requests, interact with models, and render views (e.g., ProjectsController, TeachingOffersController, MembershipsController).
-
-- Models: Active Record objects represent the database tables and business logic (e.g., User, Project, Membership).
-
-- Background Jobs: Uses Solid Queue for processing background tasks, primarily for sending email notifications.
-
-- Caching: Uses Solid Cache (in production) for fragment and data caching.
-
-#### Data Layer: The application uses SQLite3 in development and PostgreSQL in production.
-
-#### External Services: SendGrid is used for delivering all outbound email, including registration confirmations and notifications.
-
-
-
-### 2. System Flow Diagram (Sequence)
-This diagram shows the sequence of events when a User (Learner) requests to join a Teaching Offer.
-
-​```mermaid
-sequenceDiagram
-    actor User
-    participant Browser
-    participant RailsServer as Rails Server
-    participant Database
-    participant SendGrid as Email Service
-
-    User->>Browser: 1. Clicks "Request to Join"
-    Browser->>RailsServer: 2. POST /teaching_offers/[id]/memberships
-    RailsServer->>RailsServer: 3. MembershipsController#create
-    RailsServer->>Database: 4. Find TeachingOffer (Tutor)
-    Database-->>RailsServer: 5. Returns TeachingOffer
-    RailsServer->>Database: 6. Create Membership (status: "pending")
-    Database-->>RailsServer: 7. Membership saved
-    
-    par
-        RailsServer->>Database: 8a. Create Notification (for Tutor)
-        Database-->>RailsServer: 9a. Notification saved
-        
-        Note right of RailsServer: Notification.after_create_commit hook fires
-        RailsServer->>RailsServer: 10a. Enqueue NotificationMailer Job (Solid Queue)
-        RailsServer-->>SendGrid: 11a. Deliver email (via job)
-        SendGrid-->>User: 12a. Email sent to Tutor
-    and
-        RailsServer->>Browser: 8b. HTTP 303 Redirect (back to offer page)
-    end
-
-    Browser->>RailsServer: 13. GET /teaching_offers/[id]
-    RailsServer->>Database: 14. Load TeachingOffer and pending membership
-    Database-->>RailsServer: 15. Returns data
-    RailsServer->>Browser: 16. Render teaching_offers/show view
-    Browser->>User: 17. Display page with "Request Pending" message
-​```
-
-### 3. Database / Class Diagram (ERD)
-This diagram illustrates the core models and their relationships. The Membership model is a key polymorphic table that connects Users to either Projects or TeachingOffers.
-
-​```mermaid
-erDiagram
-    User {
-        int id PK
-        string name
-        string email
-        string encrypted_password
-        boolean email_notifications
-    }
-
-    BulletinPost {
-        int id PK
-        int author_id FK
-        string title
-        text description
-    }
-
-    Project {
-        int id PK
-        int author_id FK
-        string title
-        text description
-        string skills
-        int role_cnt
-        string status
-    }
-
-    TeachingOffer {
-        int id PK
-        int author_id FK
-        string title
-        text description
-        int student_cap
-        string offer_status
-    }
-
-    Membership {
-        int id PK
-        int user_id FK
-        int memberable_id FK
-        string memberable_type
-        string status
-    }
-
-    Notification {
-        int id PK
-        int user_id FK
-        int notifiable_id FK
-        string notifiable_type
-        string message
-        boolean read
-        string url
-    }
-
-    User ||--o{ BulletinPost : "has_many (author)"
-    User ||--o{ Project : "has_many (author)"
-    User ||--o{ TeachingOffer : "has_many (author)"
-    User ||--o{ Membership : "has_many"
-    User ||--o{ Notification : "has_many"
-
-    Project ||--o{ Membership : "memberable"
-    TeachingOffer ||--o{ Membership : "memberable"
-    
-    Membership }o--|| User : "belongs_to"
-    Membership }o--|{ Project : "belongs_to"
-    Membership }o--|{ TeachingOffer : "belongs_to"
-    
-    Notification }o--|| User : "belongs_to"
-​```
