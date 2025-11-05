@@ -33,14 +33,101 @@
     <%= link_to "Edit", edit_project_path(@project), class: "btn btn-secondary" %> |
     <%= button_to "Delete this project", @project, method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: "btn btn-danger" %>
   </p>
-<% elsif user_signed_in? %>
-  <% if @project.open? %>
-    <%= button_to "Apply to Join", "#", class: "btn btn-primary", disabled: true %>
-    <p><small>(“Apply” will be implemented later.)</small></p>
-  <% else %>
-    <p><em>This project is closed for new collaborators.</em></p>
-  <% end %>
+<% end %>
+
+<% if @project.open? %>
+
+    <%# =============== LEARNER VIEW =============== %>
+      <% if current_user != @project.author %>
+        <% membership = @project.memberships.find_by(user: current_user) %>
+
+        <% if membership.nil? %>
+          <!-- Not yet joined -->
+          <%= button_to "Request to Join",
+                project_memberships_path(@project),
+                method: :post,
+                class: "btn btn-primary" %>
+
+        <% elsif membership.pending? %>
+          <!-- Already requested -->
+          <p class="text-warning mt-2">Your request is pending tutor approval.</p>
+          <%= button_to "Cancel Request",
+                project_membership_path(@project, membership),
+                method: :delete,
+                class: "btn btn-secondary" %>
+
+        <% elsif membership.approved? %>
+          <!-- Approved member -->
+          <p class="text-success mt-2">You are approved for this offer.</p>
+          <%= button_to "Leave",
+                project_membership_path(@project, membership),
+                method: :delete,
+                class: "btn btn-outline-danger" %>
+
+        <% elsif membership.rejected? %>
+          <!-- Rejected member -->
+          <p class="text-danger mt-2">Your request was rejected by the tutor.</p>
+        <% end %>
+      <% end %> 
+      
+      <%# =============== AUTHOR VIEW =============== %>
+    <% if current_user == @project.author %>
+      <h3 class="mt-4">Join Requests</h3>
+      <% pending_requests = @project.pending_memberships.includes(:user) %>
+
+      <% if pending_requests.any? %>
+        <ul>
+          <% pending_requests.each do |membership| %>
+            <li>
+              <strong><%= membership.user.name %></strong>
+              (<%= membership.user.email %>)
+              <%= button_to "Approve",
+                    approve_project_membership_path(@project, membership),
+                    method: :patch,
+                    class: "btn btn-success btn-sm" %>
+              <%= button_to "Reject",
+              reject_project_membership_path(@project, membership),
+              method: :patch,
+              class: "btn btn-danger btn-sm",
+              data: { confirm: "Are you sure you want to reject this request?" } %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No pending requests.</p>
+      <% end %>
+
+      <h3 class="mt-4">Approved Member</h3>
+      <% approved_learners = @project.approved_memberships.includes(:user).map(&:user) %>
+      <% if approved_learners.any? %>
+        <ul>
+          <% approved_learners.each do |user| %>
+            <li><%= user.name %> (<%= user.email %>)</li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No members have been approved yet.</p>
+      <% end %>
+
+      <h3 class="mt-4">Rejected Members</h3>
+      <% rejected_memberships = @project.memberships.where(status: "rejected").includes(:user) %>
+
+      <% if rejected_memberships.any? %>
+        <ul>
+          <% rejected_memberships.each do |membership| %>
+            <li><%= membership.user.name %> (<%= membership.user.email %>)</li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No rejected requests.</p>
+      <% end %>
+
+    <% end %>
 <% else %>
+<p><em>This project is closed for new collaborators.</em></p>
+<% end %>
+
+<% if !user_signed_in? %>
   <p><%= link_to "Log in", new_user_session_path %> to apply or create your own projects.</p>
 <% end %>
 

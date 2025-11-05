@@ -4,6 +4,11 @@ class Project < ApplicationRecord
     has_many :users, through: :memberships
     validates :title, :description, :skills, presence: true
 
+    has_many :pending_memberships, -> { where(status: :pending) }, as: :memberable, class_name: "Membership"
+    has_many :approved_memberships, -> { where(status: :approved) }, as: :memberable, class_name: "Membership"
+
+    
+
     def open?
         status == "open"
     end
