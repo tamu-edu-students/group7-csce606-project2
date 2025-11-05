@@ -1,5 +1,6 @@
 class Membership < ApplicationRecord
   belongs_to :user
+  belongs_to :project
   belongs_to :memberable, polymorphic: true
   after_save :update_memberable_status, if: :saved_change_to_status?
 
