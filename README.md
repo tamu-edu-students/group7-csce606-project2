@@ -126,7 +126,7 @@ graph TD
     end
 
     subgraph "Application Layer (Rails)"
-        B["Puma Web Server"] --> C{"Action Dispatch (Router)"};
+        B["Web Server"] --> C{"Action Dispatch (Router)"};
         C -->|Web Request| D["Controllers"];
         D --> E["Views (ERB + Turbo)"];
         D --> F["Models (Active Record)"];
@@ -155,7 +155,6 @@ graph TD
 
     A -->|HTTP/HTTPS Request| B;
     B --> A;
-
 ```
 
 #### Client Layer: The user interacts with the application via a standard web browser. The frontend experience is powered by server-rendered ERB templates (.html.erb) and made dynamic using Hotwire (Turbo) and Stimulus.
@@ -298,7 +297,7 @@ erDiagram
 Before deploying the application, ensure you have the following installed:
 
 - **Ruby**: Version 3.4.1
-- **Rails**: Version 8.0.
+- **Rails**: Version 8.0.3
 - **SQLite3**: For development/testing
 - **Git**: For version control
 
