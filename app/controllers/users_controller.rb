@@ -1,11 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show]
-  before_action :authorize_user!, only: [:account]
-
-  def index
-    @users = User.all
-    render "devise/index"
-  end
+  before_action :set_user, only: [ :show ]
 
   def show
     @tab = params[:tab] || "projects"
@@ -14,11 +8,6 @@ class UsersController < ApplicationController
     @teaching_offers = @user.teaching_offers
     @joined_teaching_offers = @user.joined_teaching_offers
     @posts = @user.bulletin_posts
-  end
-
-  def account
-    @user = current_user
-    render "devise/account"
   end
 
   private

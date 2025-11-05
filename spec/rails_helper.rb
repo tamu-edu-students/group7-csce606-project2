@@ -9,7 +9,10 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
 require 'rspec/rails'
+
 # Add additional requires below this line. Rails is not loaded until this point!
+# spec/rails_helper.rb
+require "rails-controller-testing"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -78,7 +81,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.infer_spec_type_from_file_location!
   config.include FactoryBot::Syntax::Methods
-   # ✅ Runs lint once before suite (optional but good practice)
+  # ✅ Runs lint once before suite (optional but good practice)
   config.before(:suite) do
     FactoryBot.lint
   end
@@ -94,3 +97,5 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+Rails::Controller::Testing.install

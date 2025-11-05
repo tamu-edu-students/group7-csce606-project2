@@ -46,6 +46,5 @@ FactoryBot.define do
     trait :with_notifications_disabled do
       email_notifications { false }
     end
-
   end
 end

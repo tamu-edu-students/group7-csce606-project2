@@ -23,4 +23,3 @@ end
 Then("I should see the {string} tab") do |tab_name|
   expect(page).to have_link(tab_name)
 end
-

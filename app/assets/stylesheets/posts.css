@@ -1,0 +1,59 @@
+.bulletin-post-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.post-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.post-meta p {
+  margin: 0.25rem 0;
+  color: #555;
+}
+
+.divider {
+  margin: 1.5rem 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+.post-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.flash {
+  max-width: 800px;
+  margin: 1rem auto;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.flash.notice {
+  background-color: #e6ffed;
+  color: #2b662b;
+  border: 1px solid #2b662b;
+}
+
+.flash.alert {
+  background-color: #ffe6e6;
+  color: #a12b2b;
+  border: 1px solid #a12b2b;
+}
+
+.action-links {
+  max-width: 800px;
+  margin: 2rem auto;
+  display: flex;
+  gap: 0.75rem;
+}
+

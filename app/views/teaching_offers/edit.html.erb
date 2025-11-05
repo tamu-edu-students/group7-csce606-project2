@@ -1,6 +1,10 @@
 <% content_for :title, "Editing teaching offer" %>
 
-<h1>Editing teaching offer</h1>
+
+
+<div class="board-container">
+<h1 class="board-heading">Editing Teaching Offer</h1>
+
 
 <%= render "form", teaching_offer: @teaching_offer %>
 
@@ -9,4 +13,5 @@
 <div>
   <%= link_to "Show this teaching offer", @teaching_offer %> |
   <%= link_to "Back to teaching offers", teaching_offers_path %>
+</div>
 </div>

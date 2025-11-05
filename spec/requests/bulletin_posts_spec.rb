@@ -39,7 +39,7 @@ RSpec.describe "BulletinPosts", type: :request do
 
       context "with a search query" do
         it "calls the fuzzy search helper and renders the results" do
-          search_result = [{ type: "BulletinPost", record: bulletin_post }]
+          search_result = [ { type: "BulletinPost", record: bulletin_post } ]
 
           allow_any_instance_of(BulletinPostsController)
             .to receive(:fuzzy_search_all)

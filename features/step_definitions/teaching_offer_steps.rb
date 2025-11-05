@@ -116,7 +116,7 @@ end
 
 Given('both {string} and {string} have pending memberships in {string}') do |name1, name2, title|
   offer = TeachingOffer.find_by!(title: title)
-  [name1, name2].each do |name|
+  [ name1, name2 ].each do |name|
     user = User.find_by!(name: name)
     Membership.create!(user: user, memberable: offer, status: :pending)
   end
