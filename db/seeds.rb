@@ -8,7 +8,22 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-temp_user = User.create!(name: "Temp User", password: "Password123", email: "temp@tamu.edu")
+# db/seeds.rb
+ActiveRecord::Base.logger = nil
+
+# Create users without triggering Devise confirmation emails
+User.skip_callback(:create, :after, :send_on_create_confirmation_instructions) if User.respond_to?(:skip_callback)
+
+User.create!(
+  name: "Temp User",
+  email: "temp@tamu.edu",
+  password: "Password!",
+  confirmed_at: Time.current
+)
+
+# Re-enable callback if you want it back for runtime
+User.set_callback(:create, :after, :send_on_create_confirmation_instructions) if User.respond_to?(:set_callback)
+
 BulletinPost.create!(title: "Example Bulletin Post", description: "Example description.", author: temp_user)
 Project.create!(title: "Example Project", description: "Example description.", role_cnt: 5, author: temp_user, skills: "Example")
 TeachingOffer.create!(title: "Example Teaching Offer", description: "Example description.", author: temp_user)
