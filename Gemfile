@@ -82,7 +82,7 @@ end
 gem "amatch", "~> 0.5.0"
 
 group :test do
-  gem "shoulda-matchers", "~> 6.0"
+  gem "shoulda-matchers", "~> 7.0"
 end
 
 group :test do
